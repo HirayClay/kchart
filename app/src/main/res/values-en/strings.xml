@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="load_data">LOAD DATA</string>
+  <string name="add_one">ADD ONE</string>
+  <string name="update_newer">UPDATE NEWER</string>
+  <string name="app_name">BitMartKChart</string>
+  <string name="change_style">CHANGE STYLE</string>
+</resources>

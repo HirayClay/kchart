@@ -1,0 +1,7 @@
+<resources>
+  <string name="app_name">BitMartK线</string>
+  <string name="load_data">加载数据</string>
+  <string name="add_one">添加一条</string>
+  <string name="update_newer">更新最新数据</string>
+  <string name="change_style">变更布局样式</string>
+</resources>

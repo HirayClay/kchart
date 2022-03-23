@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context=".activities.MainActivity">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+      <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/load_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_add_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_one"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_update_newer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/update_newer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+      <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_change_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
+
+
+    <com.bitmart.kchart.BitMartChartView
+      android:id="@+id/tmv_test"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="2dp"
+      android:layout_marginTop="2dp"
+      android:layout_marginEnd="2dp"
+      android:layout_marginBottom="2dp" />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="200dp"
+      android:background="@color/design_default_color_secondary"
+      android:gravity="center"
+      android:text="SOME OTHER VIEW" />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="200dp"
+      android:background="@color/design_default_color_primary"
+      android:gravity="center"
+      android:text="SOME OTHER VIEW" />
+
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="200dp"
+      android:background="@color/design_default_color_primary_dark"
+      android:gravity="center"
+      android:text="SOME OTHER VIEW" />
+
+  </LinearLayout>
+
+</ScrollView>
