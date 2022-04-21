@@ -1,6 +1,7 @@
 package com.bitmart.kchart.util
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 
 fun Number.dp2px(context: Context): Float {
@@ -33,7 +34,7 @@ fun Number?.toStringAsFixed(accuracy: Int): String {
 fun Context.isDarkMode() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) resources.configuration.isNightModeActive else resources.configuration.uiMode == 0x21
 
 fun Context.getBackgroundColor(): Int {
-    val attributes = this.theme.obtainStyledAttributes(intArrayOf(android.R.attr.colorBackground))
+    val attributes = this.theme.obtainStyledAttributes(intArrayOf(android.R.attr.windowBackground))
     val color = attributes.getColor(0, 0xFFFFFF)
     attributes.recycle()
     return color
