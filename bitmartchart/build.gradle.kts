@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
 }
 
 android {
@@ -42,4 +43,29 @@ dependencies {
 
     androidTestImplementation(test.androidTest)
     androidTestImplementation(test.androidTestEspresso)
+}
+
+afterEvaluate{
+    publishing {
+        publications {
+
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.bitmart.android"
+                artifactId = "k-chart"
+                version = "0.1"
+            }
+
+            repositories {
+                maven {
+                    isAllowInsecureProtocol = true
+                    url = uri("http://nexus.bitmartpro.com/repository/maven-releases/")
+                    credentials {
+                        username = "m2_push"
+                        password = "8V@P6F47OH3!"
+                    }
+                }
+            }
+        }
+    }
 }

@@ -132,6 +132,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<Button>(R.id.btn_change_indicators).setOnClickListener {
+            kLineRendererProperties.showType = KLineShowType.CANDLE_WITH_BOLL
+            val bitMartChartProperties = BitMartChartProperties(
+                chartRendererProperties = mutableListOf(
+                    kLineRendererProperties,
+                    volRendererProperties,
+                ),
+            )
+            tmv.setProperties(bitMartChartProperties)
+        }
 
     }
 }

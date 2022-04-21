@@ -11,47 +11,62 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal">
-      <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/load_data"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-      <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_add_one"
+    <HorizontalScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_one"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
-      <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_update_newer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/update_newer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-      <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_change_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/change_style"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_start"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/load_data"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_add_one"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/add_one"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
 
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_update_newer"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/update_newer"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_change_style"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/change_style"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_change_indicators"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/change_style"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+      </LinearLayout>
+
+    </HorizontalScrollView>
 
     <com.bitmart.kchart.BitMartChartView
       android:id="@+id/tmv_test"

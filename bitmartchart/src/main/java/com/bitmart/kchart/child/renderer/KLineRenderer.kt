@@ -13,10 +13,12 @@ import com.bitmart.kchart.properties.KLineRendererProperties
 import com.bitmart.kchart.properties.KLineShowType
 import com.bitmart.kchart.util.toStringAsFixed
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 
 private const val CANDLE_CENTER_WIDTH_RATIO = 0.1f
 private const val CONTENT_PADDING_TOP_RATIO = 0.04f
+private const val CANDLE_MIN_HEIGHT = 1f
 
 class KLineRenderer(override val properties: KLineRendererProperties, override val bitMartChartView: IBitMartChartView) : BaseRenderer<KLineRendererProperties>() {
 
@@ -441,7 +443,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         val curCloseHeight = ((max - curData.close) / (max - min) * getDrawDataRect().height()).toFloat()
         val curOpenHeight = ((max - curData.open) / (max - min) * getDrawDataRect().height()).toFloat()
         val candleCloseTop = if (curData.isRise) getDrawDataRect().top + curCloseHeight else getDrawDataRect().top + curOpenHeight
-        val candleCloseBottom = candleCloseTop + abs(curCloseHeight - curOpenHeight)
+        val candleCloseBottom = candleCloseTop + max(abs(curCloseHeight - curOpenHeight), CANDLE_MIN_HEIGHT)
         canvas.drawRect(curStartX, candleCloseTop, curStartX + itemWidth, candleCloseBottom, if (curData.isRise) risePaint else downPaint)
 
         //绘制柱状图中间轴
