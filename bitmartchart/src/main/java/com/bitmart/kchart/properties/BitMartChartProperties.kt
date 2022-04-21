@@ -86,7 +86,7 @@ class GlobalProperties private constructor(
 
 data class BitMartChartProperties(
     //需要展示的视图配置
-    var chartRendererProperties: List<IRendererProperties>,
+    var chartRendererProperties: MutableList<IRendererProperties>,
     //价格精度
     var priceAccuracy: Int = DEFAULT_PRICE_ACCURACY,
     //指数精度

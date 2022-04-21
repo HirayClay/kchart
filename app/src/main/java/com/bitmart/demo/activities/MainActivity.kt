@@ -1,6 +1,7 @@
 package com.bitmart.demo.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -103,20 +104,15 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_change_style).setOnClickListener {
             tmv.setProperties(
-
                 bitMartChartProperties.apply {
-                    chartRendererProperties = mutableListOf(
-                        kLineRendererProperties.apply {
+                    chartRendererProperties.apply {
+                        this[0] = kLineRendererProperties.apply {
                             showType = KLineShowType.CANDLE_WITH_BOLL
                             dataFormat = "dd HH:mm"
                             showAxisYNum = 6
                             showAxisXNum = 6
-                        },
-                        volRendererProperties,
-                        macdRendererProperties,
-                        kdjRendererProperties,
-                    )
-                    rightAxisWidth = 40f
+                        }
+                    }
                 }
             )
         }
@@ -130,17 +126,6 @@ class MainActivity : AppCompatActivity() {
                 entity.low = entity.low - 5
                 controller.updateNewerData(entity)
             }
-        }
-
-        findViewById<Button>(R.id.btn_change_indicators).setOnClickListener {
-            kLineRendererProperties.showType = KLineShowType.CANDLE_WITH_BOLL
-            val bitMartChartProperties = BitMartChartProperties(
-                chartRendererProperties = mutableListOf(
-                    kLineRendererProperties,
-                    volRendererProperties,
-                ),
-            )
-            tmv.setProperties(bitMartChartProperties)
         }
 
     }

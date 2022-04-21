@@ -35,4 +35,4 @@ val DEFAULT_INDEX1_COLOR = Color.parseColor("#FFC9B885")
 val DEFAULT_INDEX2_COLOR = Color.parseColor("#FF6CB0A6")
 val DEFAULT_INDEX3_COLOR = Color.parseColor("#FF9979C6")
 
-val DEFAULT_BIT_MART_CHART_PROPERTIES = BitMartChartProperties(chartRendererProperties = listOf(KLineRendererProperties(), VolRendererProperties()))
+val DEFAULT_BIT_MART_CHART_PROPERTIES = BitMartChartProperties(chartRendererProperties = mutableListOf(KLineRendererProperties(), VolRendererProperties()))
