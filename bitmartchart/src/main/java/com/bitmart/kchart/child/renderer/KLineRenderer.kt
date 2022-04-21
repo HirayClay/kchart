@@ -321,7 +321,9 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             startY += eachHeight
             dataStartY -= eachDataHeight
         }
-        drawMaxAndMin(canvas, min, max, subList)
+        if (properties.showType!=KLineShowType.TIME_LINE){
+            drawMaxAndMin(canvas, min, max, subList)
+        }
     }
 
     private fun drawMaxAndMin(canvas: Canvas, min: Double, max: Double, dataList: List<ChartDataEntity>) {
