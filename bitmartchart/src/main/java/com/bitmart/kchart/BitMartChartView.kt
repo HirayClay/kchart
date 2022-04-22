@@ -150,7 +150,9 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         }
 
         if (getChartData().isEmpty()) {
-            drawEmptyView(canvas)
+            if (this.properties.drawEmptyView) {
+                drawEmptyView(canvas)
+            }
             return
         }
 
@@ -277,6 +279,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     override fun getDataIndexByScreenPointX(x: Float): Int? {
         return areaCalcHelper.getDataIndexByScreenPointX(x)
     }
+
     override fun getDataScreenPointXbyIndex(index: Int): Float? {
         return areaCalcHelper.getDataScreenPointXbyIndex(index)
     }

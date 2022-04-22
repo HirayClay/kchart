@@ -23,6 +23,8 @@ class GlobalProperties private constructor(
     val countAccuracy: Int,
     //右边的距离
     val rightAxisWidth: Float,
+    //绘制空数据
+    val drawEmptyView: Boolean,
     //阳线
     private val riseColor: Int,
     private val riseDarkColor: Int,
@@ -71,6 +73,7 @@ class GlobalProperties private constructor(
                 indexAccuracy = properties.indexAccuracy,
                 countAccuracy = properties.countAccuracy,
                 rightAxisWidth = properties.rightAxisWidth,
+                drawEmptyView = properties.drawEmptyView,
                 riseColor = properties.riseColor,
                 riseDarkColor = properties.riseDarkColor,
                 downColor = properties.downColor,
@@ -121,6 +124,8 @@ data class BitMartChartProperties(
     var highlightingColor: Int = DEFAULT_HIGH_LIGHTING_COLOR,
     //黑暗主题高亮颜色
     var highlightingDarkColor: Int = DEFAULT_HIGH_LIGHTING_DARK_COLOR,
+    //绘制空数据占位
+    var drawEmptyView: Boolean = false,
 )
 
 interface IRendererProperties {
