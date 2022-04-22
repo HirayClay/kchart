@@ -43,34 +43,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
         //划过的条数
         val transCount = (getTotalTranslate() / (view.getGlobalProperties().eachWidth * totalScale)).toInt()
 
-        if (totalCount <= displayCount) {
-
-            when {
-                transCount == 0 -> {
-                    return Pair(0, totalCount - 1)
-                }
-                transCount > 0 -> {
-                    return when {
-                        totalCount <= transCount -> {
-                            Pair(-1, -1)
-                        }
-                        else -> {
-                            Pair(0, totalCount - 1)
-                        }
-                    }
-                }
-                transCount < 0 -> {
-                    return when {
-                        totalCount <= abs(transCount) -> {
-                            Pair(-1, -1)
-                        }
-                        else -> {
-                            Pair(abs(transCount), totalCount - 1)
-                        }
-                    }
-                }
-            }
-        } else {
+        if (totalCount > displayCount) {
             when {
                 transCount == 0 -> {
                     return Pair(0, displayCount - 1)
@@ -101,16 +74,15 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
                 }
             }
         }
-        return Pair(-1, -1)
+        return Pair(0, totalCount - 1)
     }
 
     fun getDataIndexByScreenPointX(x: Float): Int? {
         val totalScale = getTotalScale()
         val totalTranslate = getTotalTranslate()
-        //滑动和缩放逻辑已经限制数据不会滑动到屏幕之外
-        if (totalTranslate > 0) return null
-        if (totalTranslate + getMaxTranslateWidth(totalScale) < 0) return null
-        return ((abs(totalTranslate) + x) / (view.getGlobalProperties().eachWidth * totalScale)).toInt()
+        val tran = x - totalTranslate
+        if (tran < 0) return null
+        return ((abs(tran)) / (view.getGlobalProperties().eachWidth * totalScale)).toInt()
     }
 
     fun getDataScreenPointXbyIndex(index: Int): Float? {
@@ -145,13 +117,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
 
     fun onTouchScaling(scaleFactor: Float) {
         val totalScale = getTotalScale()
-
-        if (getMaxTranslateWidth(totalScale) <= 0.0f) {
-            return
-        }
-
         val currentTotalScale = totalScale * scaleFactor
-
         if (currentTotalScale < view.getGlobalProperties().maxScaleRatio && currentTotalScale > view.getGlobalProperties().minScaleRatio) {
 
             tempMatrix.reset()
@@ -162,6 +128,10 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
             val tempTotalScale = tempMatrixArray[Matrix.MSCALE_X]
             val tempTotalTranslate = tempMatrixArray[Matrix.MTRANS_X]
             val tempMaxTranslateWidth = getMaxTranslateWidth(tempTotalScale)
+
+            if (tempMaxTranslateWidth < 0f) {
+                return
+            }
 
             //这次缩放到左边界了缩放中心就移动到最左边
             if (tempTotalTranslate >= 0) {
@@ -195,13 +165,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
     }
 
     fun onHorizontalScroll(distanceX: Float) {
-
         val totalScale = getTotalScale()
-
-        if (getMaxTranslateWidth(totalScale) <= 0.0f) {
-            return
-        }
-
         tempMatrix.reset()
         tempMatrix.postScale(totalScale, 1f)
         tempMatrix.postTranslate(getTotalTranslate(), 0f)
@@ -209,6 +173,10 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
         tempMatrix.getValues(tempMatrixArray)
         val tempTotalTranslate = tempMatrixArray[Matrix.MTRANS_X]
         val tempMaxTranslateWidth = getMaxTranslateWidth(totalScale)
+
+        if (tempMaxTranslateWidth < 0) {
+            return
+        }
 
         if (tempTotalTranslate >= 0) {
             canvasMatrix.postTranslate(-distanceX, 0f)
@@ -222,7 +190,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
             return
         }
 
-        if (abs(tempTotalTranslate) > tempMaxTranslateWidth) {
+        if (tempTotalTranslate + tempMaxTranslateWidth < 0) {
             canvasMatrix.postTranslate(-distanceX, 0f)
             canvasMatrix.postTranslate(-(tempMaxTranslateWidth + tempTotalTranslate), 0f)
             view.invalidate()

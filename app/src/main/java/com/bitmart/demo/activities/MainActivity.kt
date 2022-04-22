@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
                 kdjRendererProperties,
                 rsiRendererProperties,
             ),
+            rightAxisWidth = 40f
         )
     }
 
@@ -61,10 +62,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         is MainActivityViewState.Success -> {
-
-
-
-                            val list = viewState.lineList.map {
+                            val list = viewState.lineList.subList(0,60).map {
                                 val chartData = ChartDataEntity()
                                 chartData.high = it.high
                                 chartData.low = it.low

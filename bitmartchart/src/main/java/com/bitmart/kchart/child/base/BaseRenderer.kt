@@ -45,6 +45,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
         val dataRange = bitMartChartView.getDataInScreenRange()
 
         if (dataRange.first == dataRange.second) {
+            canvas.restore()
             return
         }
         val min = bitMartChartView.getChartData().subList(dataRange.first, dataRange.second + 1).minOf(rangeMinBy)
@@ -71,7 +72,11 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
                 if (pointXData != null) {
                     drawHeader(rendererRect, canvas, pointXData)
                     drawHighlighting(rendererRect, canvas, highlightingPoint, itemWidth, pointXData)
+                }else{
+                    drawHeader(rendererRect, canvas, chartData.last())
                 }
+            }else{
+                drawHeader(rendererRect, canvas, chartData.last())
             }
         }
         canvas.restore()
@@ -101,6 +106,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
     open fun drawHeader(renderRect: RectF, canvas: Canvas, dataEntity: ChartDataEntity) {
 
     }
+
     //绘制坐标轴
     open fun drawAxis(renderRect: RectF, canvas: Canvas) {
 
