@@ -61,6 +61,9 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         is MainActivityViewState.Success -> {
+
+
+
                             val list = viewState.lineList.map {
                                 val chartData = ChartDataEntity()
                                 chartData.high = it.high

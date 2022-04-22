@@ -145,6 +145,11 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
 
     fun onTouchScaling(scaleFactor: Float) {
         val totalScale = getTotalScale()
+
+        if (getMaxTranslateWidth(totalScale) <= 0.0f) {
+            return
+        }
+
         val currentTotalScale = totalScale * scaleFactor
 
         if (currentTotalScale < view.getGlobalProperties().maxScaleRatio && currentTotalScale > view.getGlobalProperties().minScaleRatio) {
@@ -190,7 +195,13 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
     }
 
     fun onHorizontalScroll(distanceX: Float) {
+
         val totalScale = getTotalScale()
+
+        if (getMaxTranslateWidth(totalScale) <= 0.0f) {
+            return
+        }
+
         tempMatrix.reset()
         tempMatrix.postScale(totalScale, 1f)
         tempMatrix.postTranslate(getTotalTranslate(), 0f)
