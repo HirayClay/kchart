@@ -72,10 +72,10 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
                 if (pointXData != null) {
                     drawHeader(rendererRect, canvas, pointXData)
                     drawHighlighting(rendererRect, canvas, highlightingPoint, itemWidth, pointXData)
-                }else{
+                } else {
                     drawHeader(rendererRect, canvas, chartData.last())
                 }
-            }else{
+            } else {
                 drawHeader(rendererRect, canvas, chartData.last())
             }
         }

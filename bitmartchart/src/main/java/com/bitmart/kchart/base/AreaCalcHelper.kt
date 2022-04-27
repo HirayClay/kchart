@@ -129,7 +129,12 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
             val tempTotalTranslate = tempMatrixArray[Matrix.MTRANS_X]
             val tempMaxTranslateWidth = getMaxTranslateWidth(tempTotalScale)
 
-            if (tempMaxTranslateWidth < 0f) {
+            if (tempMaxTranslateWidth <= 0) { //数据量太小数据靠左缩放中心就放左边
+                if (scaleFactor > 1f) {
+                    canvasMatrix.postScale(scaleFactor, 1f, view.getTouchArea().left.toFloat(), view.getTouchArea().height().toFloat() / 2 + view.getTouchArea().top)
+                    view.invalidate()
+                    return
+                }
                 return
             }
 
@@ -174,11 +179,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
         val tempTotalTranslate = tempMatrixArray[Matrix.MTRANS_X]
         val tempMaxTranslateWidth = getMaxTranslateWidth(totalScale)
 
-        if (tempMaxTranslateWidth < 0) {
-            return
-        }
-
-        if (tempTotalTranslate >= 0) {
+        if (tempTotalTranslate >= 0) { //从左往右滑动
             canvasMatrix.postTranslate(-distanceX, 0f)
             canvasMatrix.postTranslate(-tempTotalTranslate, 0f)
             view.invalidate()
@@ -190,13 +191,18 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
             return
         }
 
+        if (tempTotalTranslate <= 0) { //从右往左滑动
+            if (tempMaxTranslateWidth <= 0) {
+                return
+            }
+        }
+
         if (tempTotalTranslate + tempMaxTranslateWidth < 0) {
             canvasMatrix.postTranslate(-distanceX, 0f)
             canvasMatrix.postTranslate(-(tempMaxTranslateWidth + tempTotalTranslate), 0f)
             view.invalidate()
             return
         }
-
         canvasMatrix.postTranslate(-distanceX, 0f)
         view.invalidate()
         return

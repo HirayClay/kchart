@@ -438,9 +438,6 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
     private fun drawCandle(canvas: Canvas, min: Double, max: Double, itemWidth: Float, preStartX: Float?, preData: ChartDataEntity?, curStartX: Float, curData: ChartDataEntity) {
 
-        if (preData == null || preStartX == null) {
-            return
-        }
         //绘制柱状图
         val curCloseHeight = ((max - curData.close) / (max - min) * getDrawDataRect().height()).toFloat()
         val curOpenHeight = ((max - curData.open) / (max - min) * getDrawDataRect().height()).toFloat()
@@ -464,27 +461,27 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         when (properties.showType) {
             KLineShowType.CANDLE_WITH_MA -> {
                 linePaint.color = getIndexColor()[0]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.ma[0], curStartX, curData.ma[0])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.ma?.get(0), curStartX, curData.ma[0])
                 linePaint.color = getIndexColor()[1]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.ma[1], curStartX, curData.ma[1])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.ma?.get(1), curStartX, curData.ma[1])
                 linePaint.color = getIndexColor()[2]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.ma[2], curStartX, curData.ma[2])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.ma?.get(2), curStartX, curData.ma[2])
             }
             KLineShowType.CANDLE_WITH_EMA -> {
                 linePaint.color = getIndexColor()[0]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.ema[0], curStartX, curData.ema[0])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.ema?.get(0), curStartX, curData.ema[0])
                 linePaint.color = getIndexColor()[1]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.ema[1], curStartX, curData.ema[1])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.ema?.get(1), curStartX, curData.ema[1])
                 linePaint.color = getIndexColor()[2]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.ema[2], curStartX, curData.ema[2])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.ema?.get(2), curStartX, curData.ema[2])
             }
             KLineShowType.CANDLE_WITH_BOLL -> {
                 linePaint.color = getIndexColor()[0]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.boll[0], curStartX, curData.boll[0])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.boll?.get(0), curStartX, curData.boll[0])
                 linePaint.color = getIndexColor()[1]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.boll[1], curStartX, curData.boll[1])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.boll?.get(1), curStartX, curData.boll[1])
                 linePaint.color = getIndexColor()[2]
-                drawLine(canvas, min, max, itemWidth, preStartX, preData.boll[2], curStartX, curData.boll[2])
+                drawLine(canvas, min, max, itemWidth, preStartX, preData?.boll?.get(2), curStartX, curData.boll[2])
             }
             else -> {
 

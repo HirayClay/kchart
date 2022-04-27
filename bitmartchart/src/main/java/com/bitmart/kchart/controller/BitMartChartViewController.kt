@@ -15,11 +15,9 @@ class BitMartChartViewController {
     //更新最新一条数据
     suspend fun updateNewerData(entity: ChartDataEntity) {
         if (chartDataEntities.isEmpty()) return
-        println(chartDataEntities.last())
         chartDataEntities.removeLast()
         chartDataEntities.add(entity)
         Calculator.calc(chartDataEntities)
-        println(chartDataEntities.last())
         call?.onDataSetAdd(0)
     }
 

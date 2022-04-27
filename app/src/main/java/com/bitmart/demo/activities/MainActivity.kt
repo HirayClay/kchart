@@ -1,19 +1,18 @@
 package com.bitmart.demo.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bitmart.demo.R
+import com.bitmart.demo.viewmodel.MainActivityViewModel
+import com.bitmart.demo.viewmodel.MainActivityViewState
 import com.bitmart.kchart.BitMartChartView
 import com.bitmart.kchart.controller.BitMartChartViewController
 import com.bitmart.kchart.entity.ChartDataEntity
 import com.bitmart.kchart.properties.*
-import com.bitmart.demo.R
-import com.bitmart.demo.viewmodel.MainActivityViewModel
-import com.bitmart.demo.viewmodel.MainActivityViewState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -62,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         is MainActivityViewState.Success -> {
-                            val list = viewState.lineList.subList(0,60).map {
+                            val list = viewState.lineList.subList(0, 20).map {
                                 val chartData = ChartDataEntity()
                                 chartData.high = it.high
                                 chartData.low = it.low
