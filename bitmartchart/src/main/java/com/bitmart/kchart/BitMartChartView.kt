@@ -291,7 +291,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         this.post {
             val distanceX = areaCalcHelper.getMaxTranslateWidth(getTotalScale())
             if (distanceX <= 0) {
-                invalidate()
+                areaCalcHelper.setTranslate(0f)
             } else {
                 areaCalcHelper.setTranslate(distanceX)
             }
