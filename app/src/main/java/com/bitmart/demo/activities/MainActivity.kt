@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bitmart.data.domain.model.KLineModel
 import com.bitmart.demo.R
 import com.bitmart.demo.viewmodel.MainActivityViewModel
 import com.bitmart.demo.viewmodel.MainActivityViewState
@@ -13,6 +14,7 @@ import com.bitmart.kchart.BitMartChartView
 import com.bitmart.kchart.controller.BitMartChartViewController
 import com.bitmart.kchart.entity.ChartDataEntity
 import com.bitmart.kchart.properties.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -29,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private val macdRendererProperties by lazy { MacdRendererProperties() }
     private val kdjRendererProperties by lazy { KdjRendererProperties() }
     private val rsiRendererProperties by lazy { RsiRendererProperties() }
+
+    private var tempCacheList = listOf<KLineModel>()
 
     private val bitMartChartProperties by lazy {
         BitMartChartProperties(
@@ -61,7 +65,10 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         is MainActivityViewState.Success -> {
-                            val list = viewState.lineList.subList(0, 20).map {
+
+                            tempCacheList = viewState.lineList
+
+                            var list = viewState.lineList.subList(0, 20).map {
                                 val chartData = ChartDataEntity()
                                 chartData.high = it.high
                                 chartData.low = it.low
@@ -72,8 +79,23 @@ class MainActivity : AppCompatActivity() {
                                 chartData.time = it.time
                                 return@map chartData
                             }
-
                             controller.setChartData(list)
+
+
+                            delay(2500)
+
+                             list = viewState.lineList.subList(0, 80 ).map {
+                                val chartData = ChartDataEntity()
+                                chartData.high = it.high
+                                chartData.low = it.low
+                                chartData.open = it.open
+                                chartData.close = it.close
+                                chartData.vol = it.vol
+                                chartData.amount = it.amount
+                                chartData.time = it.time
+                                return@map chartData
+                            }
+                            controller.addOldChartData(list)
                         }
 
                         is MainActivityViewState.Error -> {

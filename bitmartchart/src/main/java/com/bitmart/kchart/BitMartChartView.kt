@@ -293,7 +293,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
             if (distanceX <= 0) {
                 areaCalcHelper.setTranslate(0f)
             } else {
-                areaCalcHelper.setTranslate(distanceX)
+                areaCalcHelper.setTranslate(-distanceX)
             }
         }
     }
@@ -302,8 +302,15 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         this.childRenders.forEach { renderer ->
             renderer.dataRect.set(0f, renderer.rendererRect.top, abs(areaCalcHelper.getDataWidth(getChartData().size)).roundToInt().toFloat(), renderer.rendererRect.bottom)
         }
+
         this.post {
-            areaCalcHelper.postTranslate(areaCalcHelper.getDataWidth(newDataSize))
+            val distanceX = areaCalcHelper.getMaxTranslateWidth(getTotalScale())
+            if (distanceX <= 0) {
+                areaCalcHelper.setTranslate(0f)
+            } else {
+                areaCalcHelper.setTranslate(-distanceX)
+            }
+
         }
     }
 

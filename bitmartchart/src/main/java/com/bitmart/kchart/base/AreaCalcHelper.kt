@@ -210,12 +210,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
 
     fun setTranslate(distanceX: Float) {
         canvasMatrix.setScale(getTotalScale(), 1f)
-        canvasMatrix.postTranslate(-distanceX, 0f)
-        view.invalidate()
-    }
-
-    fun postTranslate(distanceX: Float) {
-        canvasMatrix.postTranslate(-distanceX, 0f)
+        canvasMatrix.postTranslate(distanceX, 0f)
         view.invalidate()
     }
 }
