@@ -13,6 +13,8 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
 
     private var loadingMore = false
 
+    private var noMore = false
+
     private var loadMoreListener: LoadMoreListener? = null
 
     private var focusX = 0f
@@ -23,8 +25,9 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
         this.loadMoreListener = loadMoreListener
     }
 
-    fun setLoadingMoreFinish() {
+    fun setLoadingMoreFinish(noMore: Boolean) {
         this.loadingMore = false
+        this.noMore = noMore
     }
 
     fun inScreenArea(index: Int): Boolean {
@@ -184,9 +187,11 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
             canvasMatrix.postTranslate(-tempTotalTranslate, 0f)
             view.invalidate()
 
-            if (!loadingMore) {
-                loadingMore = true
-                this.loadMoreListener?.onLoadMore()
+            if (!noMore) {
+                if (!loadingMore) {
+                    loadingMore = true
+                    this.loadMoreListener?.onLoadMore()
+                }
             }
             return
         }
@@ -212,6 +217,10 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
         canvasMatrix.setScale(getTotalScale(), 1f)
         canvasMatrix.postTranslate(distanceX, 0f)
         view.invalidate()
+    }
+
+    fun setNoMoreData(noMore: Boolean) {
+        this.noMore = noMore
     }
 }
 

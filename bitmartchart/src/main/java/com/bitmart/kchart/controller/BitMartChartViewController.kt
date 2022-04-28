@@ -33,7 +33,6 @@ class BitMartChartViewController {
         chartDataEntities.clear()
         chartDataEntities.addAll(entities)
         Calculator.calc(chartDataEntities)
-        setLoadMOreFinish()
         call?.onDataSetChanged()
     }
 
@@ -45,7 +44,6 @@ class BitMartChartViewController {
         }
         chartDataEntities.addAll(entities)
         Calculator.calc(chartDataEntities)
-        setLoadMOreFinish()
         call?.onDataSetAdd(if (chartDataEntities.size == 0) 0 else entities.size)
     }
 
@@ -57,7 +55,6 @@ class BitMartChartViewController {
         }
         chartDataEntities.addAll(0, entities)
         Calculator.calc(chartDataEntities)
-        setLoadMOreFinish()
         call?.onDataSetAdd(if (chartDataEntities.size == 0) 0 else entities.size)
     }
 
@@ -71,7 +68,7 @@ class BitMartChartViewController {
     }
 
     //设置更新完成
-    fun setLoadMOreFinish() {
-        call?.finishLoadMore()
+    fun setLoadMoreFinish(noMore: Boolean) {
+        call?.finishLoadMore(noMore)
     }
 }

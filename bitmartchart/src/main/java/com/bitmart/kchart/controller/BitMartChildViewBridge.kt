@@ -6,5 +6,5 @@ interface BitMartChildViewBridge {
 
     fun onDataSetAdd(newDataSize: Int)
 
-    fun finishLoadMore()
+    fun finishLoadMore(noMore:Boolean)
 }

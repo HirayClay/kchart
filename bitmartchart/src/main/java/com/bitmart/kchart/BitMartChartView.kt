@@ -314,8 +314,8 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         }
     }
 
-    override fun finishLoadMore() {
-        areaCalcHelper.setLoadingMoreFinish()
+    override fun finishLoadMore(noMore:Boolean) {
+        areaCalcHelper.setLoadingMoreFinish(noMore)
     }
 
     fun setController(controller: BitMartChartViewController) {
