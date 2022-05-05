@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
                             tempCacheList = viewState.lineList
 
-                            var list = viewState.lineList.subList(0, 20).map {
+                            var list = viewState.lineList.subList(0, 30).map {
                                 val chartData = ChartDataEntity()
                                 chartData.high = it.high
                                 chartData.low = it.low
@@ -83,9 +83,9 @@ class MainActivity : AppCompatActivity() {
 
                             controller.setLoadMoreFinish(false)
 
-                            delay(2500)
+                            delay(5000)
 
-                             list = viewState.lineList.subList(0, 80 ).map {
+                            list = viewState.lineList.subList(100, 200).map {
                                 val chartData = ChartDataEntity()
                                 chartData.high = it.high
                                 chartData.low = it.low

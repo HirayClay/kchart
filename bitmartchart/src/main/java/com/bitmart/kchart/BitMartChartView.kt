@@ -308,18 +308,24 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
             if (distanceX <= 0) {
                 areaCalcHelper.setTranslate(0f)
             } else {
-                areaCalcHelper.setTranslate(-distanceX)
+                val oldDataSize = getChartData().size - newDataSize
+                val x = oldDataSize * getTotalScale() * getGlobalProperties().eachWidth - getGlobalProperties().showPageNum * getGlobalProperties().eachWidth + getGlobalProperties().rightAxisWidth.dp2px(context)
+                if (x <= 0) {
+                    areaCalcHelper.setTranslate(-distanceX)
+                } else {
+                    val newDataWidth = areaCalcHelper.getDataWidth(newDataSize)
+                    areaCalcHelper.setTranslate(-newDataWidth + getTotalTranslate())
+                }
             }
-
         }
     }
 
-    override fun finishLoadMore(noMore:Boolean) {
+    override fun finishLoadMore(noMore: Boolean) {
         areaCalcHelper.setLoadingMoreFinish(noMore)
     }
 
     override fun getCurrentPageSize(): Int {
-       return areaCalcHelper.getCurrentPageSize()
+        return areaCalcHelper.getCurrentPageSize()
     }
 
     fun setController(controller: BitMartChartViewController) {
