@@ -222,6 +222,10 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
     fun setNoMoreData(noMore: Boolean) {
         this.noMore = noMore
     }
+
+    fun getCurrentPageSize(): Int {
+       return (view.getGlobalProperties().showPageNum / getTotalScale()).roundToInt()
+    }
 }
 
 interface LoadMoreListener {

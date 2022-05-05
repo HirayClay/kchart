@@ -318,6 +318,10 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         areaCalcHelper.setLoadingMoreFinish(noMore)
     }
 
+    override fun getCurrentPageSize(): Int {
+       return areaCalcHelper.getCurrentPageSize()
+    }
+
     fun setController(controller: BitMartChartViewController) {
         this.controller = controller
         this.controller.setListener(this)

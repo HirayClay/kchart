@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                             }
                             controller.setChartData(list)
 
+                            controller.setLoadMoreFinish(false)
 
                             delay(2500)
 
@@ -96,6 +97,8 @@ class MainActivity : AppCompatActivity() {
                                 return@map chartData
                             }
                             controller.addOldChartData(list)
+
+                            controller.setLoadMoreFinish(true)
                         }
 
                         is MainActivityViewState.Error -> {

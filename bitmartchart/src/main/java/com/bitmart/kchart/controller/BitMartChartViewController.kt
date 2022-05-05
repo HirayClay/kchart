@@ -71,4 +71,9 @@ class BitMartChartViewController {
     fun setLoadMoreFinish(noMore: Boolean) {
         call?.finishLoadMore(noMore)
     }
+
+    //获取当前屏幕可显示的条目数
+    fun getCurrentPageSize(): Int {
+        return call?.getCurrentPageSize() ?: 40
+    }
 }
