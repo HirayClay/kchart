@@ -89,7 +89,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         }
     }
 
-    private fun covertProperties(bitMartChartProperties: BitMartChartProperties, rendererCountChangeListener: (() -> Unit)? = null) {
+    private fun covertProperties(bitMartChartProperties: BitMartChartProperties) {
         this.properties = GlobalProperties.fromProperties(bitMartChartProperties)
         val calcProperties = mutableListOf<IRendererProperties>()
         bitMartChartProperties.chartRendererProperties.filter { it !is DividerRendererProperties }.forEachIndexed { index, properties ->
@@ -113,14 +113,8 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
             }
         }
 
-        val needCallChangeListener = this.childRenders.isNotEmpty() && this.childRenders.size != bitMartChartProperties.chartRendererProperties.size
         this.childRenders.clear()
         this.childRenders.addAll(renderers)
-
-        //布局大小变化
-        if (needCallChangeListener) {
-            rendererCountChangeListener?.invoke()
-        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -285,10 +279,10 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     override fun onDataSetChanged() {
-        this.childRenders.forEach { renderer ->
-            renderer.dataRect.set(0f, renderer.rendererRect.top, abs(areaCalcHelper.getDataWidth(getChartData().size)).roundToInt().toFloat(), renderer.rendererRect.bottom)
-        }
         this.post {
+            this.childRenders.forEach { renderer ->
+                renderer.dataRect.set(0f, renderer.rendererRect.top, abs(areaCalcHelper.getDataWidth(getChartData().size)).roundToInt().toFloat(), renderer.rendererRect.bottom)
+            }
             val distanceX = areaCalcHelper.getMaxTranslateWidth(getTotalScale())
             if (distanceX <= 0) {
                 areaCalcHelper.setTranslate(0f)
@@ -299,11 +293,10 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     override fun onDataSetAdd(newDataSize: Int) {
-        this.childRenders.forEach { renderer ->
-            renderer.dataRect.set(0f, renderer.rendererRect.top, abs(areaCalcHelper.getDataWidth(getChartData().size)).roundToInt().toFloat(), renderer.rendererRect.bottom)
-        }
-
         this.post {
+            this.childRenders.forEach { renderer ->
+                renderer.dataRect.set(0f, renderer.rendererRect.top, abs(areaCalcHelper.getDataWidth(getChartData().size)).roundToInt().toFloat(), renderer.rendererRect.bottom)
+            }
             val distanceX = areaCalcHelper.getMaxTranslateWidth(getTotalScale())
             if (distanceX <= 0) {
                 areaCalcHelper.setTranslate(0f)
@@ -334,10 +327,9 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     fun setProperties(bitMartChartProperties: BitMartChartProperties) {
-        covertProperties(bitMartChartProperties) {
-            calcEachHeight(height, width)
-            requestLayout()
-        }
+        covertProperties(bitMartChartProperties)
+        calcEachHeight(height, width)
+        requestLayout()
     }
 
     override fun onLoadMore() {
