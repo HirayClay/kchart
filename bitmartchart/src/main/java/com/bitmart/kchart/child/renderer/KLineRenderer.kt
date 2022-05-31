@@ -157,14 +157,14 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         val fontPadding = textPaint.fontMetrics.descent
 
         val info = listOf(
-            Pair("Date:   ", DateFormat.format(properties.dataFormat, dataEntity.time).toString()),
-            Pair("Open:   ", dataEntity.open.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)),
-            Pair("High:   ", dataEntity.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)),
-            Pair("Low:    ", dataEntity.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)),
-            Pair("Close:  ", dataEntity.close.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)),
-            Pair("Change: ", dataEntity.change.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)),
-            Pair("Change%:", dataEntity.ratio.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy) + "%"),
-            Pair("Amount: ", dataEntity.vol.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy)),
+            Triple("${bitMartChartView.getGlobalProperties().languageConverter.date}:", DateFormat.format(properties.dataFormat, dataEntity.time).toString(), false),
+            Triple("${bitMartChartView.getGlobalProperties().languageConverter.open}:", dataEntity.open.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().languageConverter.high}:", dataEntity.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().languageConverter.low}:", dataEntity.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().languageConverter.close}:", dataEntity.close.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().languageConverter.change}:", dataEntity.change.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), true),
+            Triple("${bitMartChartView.getGlobalProperties().languageConverter.changeRatio}:", "${dataEntity.ratio.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)}%", true),
+            Triple("${bitMartChartView.getGlobalProperties().languageConverter.amount}:", dataEntity.vol.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy), false),
         )
         val infoAreaMinWidth = info.maxOf { textPaint.measureText(it.first + it.second) }
         val infoAreaHeight = fontHeight * 8f
@@ -188,7 +188,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
         var top = area.top
         info.forEach {
-            if (it.first == "Change:" || it.first == "Change%:") {
+            if (it.third) {
                 textPaint.color = if (dataEntity.isRise) bitMartChartView.getGlobalProperties().riseColor() else bitMartChartView.getGlobalProperties().downColor()
             } else {
                 textPaint.color = bitMartChartView.getGlobalProperties().textColor()
@@ -321,7 +321,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             startY += eachHeight
             dataStartY -= eachDataHeight
         }
-        if (properties.showType!=KLineShowType.TIME_LINE){
+        if (properties.showType != KLineShowType.TIME_LINE) {
             drawMaxAndMin(canvas, min, max, subList)
         }
     }
@@ -450,7 +450,13 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         val curLowHeight = ((max - curData.low) / (max - min) * getDrawDataRect().height()).toFloat()
         val candleHighTop = getDrawDataRect().top + curHighHeight
         val candleHighBottom = candleHighTop + abs(curHighHeight - curLowHeight)
-        canvas.drawRect(curStartX + itemWidth / 2 - itemWidth * CANDLE_CENTER_WIDTH_RATIO / 2, candleHighTop, curStartX + itemWidth / 2 + itemWidth * CANDLE_CENTER_WIDTH_RATIO / 2, candleHighBottom, if (curData.isRise) risePaint else downPaint)
+        canvas.drawRect(
+            curStartX + itemWidth / 2 - itemWidth * CANDLE_CENTER_WIDTH_RATIO / 2,
+            candleHighTop,
+            curStartX + itemWidth / 2 + itemWidth * CANDLE_CENTER_WIDTH_RATIO / 2,
+            candleHighBottom,
+            if (curData.isRise) risePaint else downPaint
+        )
 
         //绘制最高点最低点价格
         textPaint.textSize = getFontSize()

@@ -25,6 +25,8 @@ class GlobalProperties private constructor(
     val rightAxisWidth: Float,
     //绘制空数据
     val drawEmptyView: Boolean,
+    //国际化语言配置项
+    val languageConverter: ChartLanguageConverter,
     //阳线
     private val riseColor: Int,
     private val riseDarkColor: Int,
@@ -74,6 +76,7 @@ class GlobalProperties private constructor(
                 countAccuracy = properties.countAccuracy,
                 rightAxisWidth = properties.rightAxisWidth,
                 drawEmptyView = properties.drawEmptyView,
+                languageConverter = properties.languageConverter,
                 riseColor = properties.riseColor,
                 riseDarkColor = properties.riseDarkColor,
                 downColor = properties.downColor,
@@ -126,11 +129,46 @@ data class BitMartChartProperties(
     var highlightingDarkColor: Int = DEFAULT_HIGH_LIGHTING_DARK_COLOR,
     //绘制空数据占位
     var drawEmptyView: Boolean = false,
+    //国际化语言配置项
+    var languageConverter: ChartLanguageConverter = ChartLanguageEnglish(),
 )
 
 interface IRendererProperties {
     //高度权重
     var heightRatio: Float
+}
+
+abstract class ChartLanguageConverter {
+    abstract val date: String
+    abstract val open: String
+    abstract val close: String
+    abstract val high: String
+    abstract val low: String
+    abstract val change: String
+    abstract val changeRatio: String
+    abstract val amount: String
+}
+
+class ChartLanguageEnglish : ChartLanguageConverter() {
+    override val date: String = "Date"
+    override val open: String = "Open"
+    override val close: String = "Close"
+    override val high: String = "High"
+    override val low: String = "Low"
+    override val change: String = "Change"
+    override val changeRatio: String = "Change%"
+    override val amount: String = "Amount"
+}
+
+class ChartLanguageChinese : ChartLanguageConverter() {
+    override val date: String = "时间"
+    override val open: String = "开盘价"
+    override val close: String = "收盘价"
+    override val high: String = "最高"
+    override val low: String = "最低"
+    override val change: String = "涨跌额"
+    override val changeRatio: String = "涨跌幅"
+    override val amount: String = "成交量"
 }
 
 data class KLineRendererProperties constructor(
