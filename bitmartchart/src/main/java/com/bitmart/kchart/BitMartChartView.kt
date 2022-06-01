@@ -172,6 +172,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
             color = getGlobalProperties().textColor()
             textSize = 20.sp2px(this@BitMartChartView.context)
             textAlign = Paint.Align.CENTER
+            isAntiAlias = true
         }
     }
 

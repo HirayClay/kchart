@@ -15,6 +15,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().highlightingColor()
+            isAntiAlias = true
         }
     }
 
@@ -22,6 +23,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().downColor()
+            isAntiAlias = true
         }
     }
 
@@ -29,6 +31,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().riseColor()
+            isAntiAlias = true
         }
     }
 

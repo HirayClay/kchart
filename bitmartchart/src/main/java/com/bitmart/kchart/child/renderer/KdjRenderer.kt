@@ -15,6 +15,7 @@ class KdjRenderer(override val properties: KdjRendererProperties, override val b
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().textColor()
+            isAntiAlias = true
         }
     }
 
@@ -23,6 +24,7 @@ class KdjRenderer(override val properties: KdjRendererProperties, override val b
             style = Paint.Style.STROKE
             isDither = true
             strokeCap = Paint.Cap.ROUND
+            isAntiAlias = true
         }
     }
 

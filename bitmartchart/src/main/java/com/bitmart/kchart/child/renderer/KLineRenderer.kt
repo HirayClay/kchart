@@ -26,6 +26,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().textColor()
+            isAntiAlias = true
         }
     }
 
@@ -33,6 +34,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().backgroundColor
+            isAntiAlias = true
         }
     }
 
@@ -40,6 +42,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().backgroundColor
+            isAntiAlias = true
         }
     }
 
@@ -49,6 +52,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             color = bitMartChartView.getGlobalProperties().highlightingColor()
             isDither = true
             strokeCap = Paint.Cap.ROUND
+            isAntiAlias = true
         }
     }
 
@@ -56,6 +60,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().highlightingColor()
+            isAntiAlias = true
         }
     }
 

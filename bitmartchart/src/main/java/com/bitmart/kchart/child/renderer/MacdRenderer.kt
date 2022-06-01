@@ -16,6 +16,7 @@ class MacdRenderer(override val properties: MacdRendererProperties, override val
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().textColor()
+            isAntiAlias = true
         }
     }
 
@@ -24,6 +25,7 @@ class MacdRenderer(override val properties: MacdRendererProperties, override val
             style = Paint.Style.STROKE
             isDither = true
             strokeCap = Paint.Cap.ROUND
+            isAntiAlias = true
         }
     }
 

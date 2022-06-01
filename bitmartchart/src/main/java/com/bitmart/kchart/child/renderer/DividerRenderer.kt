@@ -15,6 +15,7 @@ class DividerRenderer(override val bitMartChartView: IBitMartChartView) : IRende
         Paint().apply {
             style = Paint.Style.FILL
             color = bitMartChartView.getGlobalProperties().highlightingColor()
+            isAntiAlias = true
         }
     }
 
