@@ -6,18 +6,24 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 internal object Calculator {
-    fun calc(entities: List<ChartDataEntity>): MutableList<ChartDataEntity> {
-        if (entities.isEmpty()) emptyList<ChartDataEntity>()
-        calcRise(entities)
-        calcMa(entities, arrayOf(5, 10, 20))
-        calcVolMa(entities, arrayOf(5, 10))
-        calcEma(entities, arrayOf(5, 10, 20))
-        calcBoll(entities, 20, 2)
-        calcKdj(entities, 9, 3, 3)
-        calcRsi(entities, arrayOf(6, 12, 24))
-        calcMacd(entities, 12, 26, 9)
 
-        return entities.toMutableList()
+    private fun <T> List<T>.copyOf(): MutableList<T> {
+        val original = this
+        return mutableListOf<T>().apply { addAll(original) }
+    }
+
+    fun calc(entities: List<ChartDataEntity>): MutableList<ChartDataEntity> {
+        val local = entities.copyOf()
+        if (local.isEmpty()) emptyList<ChartDataEntity>()
+        calcRise(local)
+        calcMa(local, arrayOf(5, 10, 20))
+        calcVolMa(local, arrayOf(5, 10))
+        calcEma(local, arrayOf(5, 10, 20))
+        calcBoll(local, 20, 2)
+        calcKdj(local, 9, 3, 3)
+        calcRsi(local, arrayOf(6, 12, 24))
+        calcMacd(local, 12, 26, 9)
+        return local
     }
 
     private fun calcRise(entities: List<ChartDataEntity>) {

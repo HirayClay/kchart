@@ -28,6 +28,7 @@ class BitMartChartViewController {
         call?.onDataSetAdd(0)
     }
 
+
     //添加一条新数据
     suspend fun addNewData(entity: ChartDataEntity) {
         chartDataEntities.add(entity)
