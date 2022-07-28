@@ -69,8 +69,6 @@ class MainActivity : AppCompatActivity() {
                             tempCacheList = list
 
                             controller.setChartData(list)
-
-                            startUpdateData()
                         }
 
 
@@ -81,15 +79,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private fun startUpdateData() {
-        lifecycleScope.launch {
-            while (true){
-                delay(10)
-                controller.addNewChartData(tempCacheList)
             }
         }
     }

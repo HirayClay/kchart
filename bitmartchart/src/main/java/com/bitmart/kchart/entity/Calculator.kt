@@ -6,8 +6,8 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 internal object Calculator {
-    suspend fun calc(entities: List<ChartDataEntity>) {
-        if (entities.isEmpty()) return
+    fun calc(entities: List<ChartDataEntity>): MutableList<ChartDataEntity> {
+        if (entities.isEmpty()) emptyList<ChartDataEntity>()
         calcRise(entities)
         calcMa(entities, arrayOf(5, 10, 20))
         calcVolMa(entities, arrayOf(5, 10))
@@ -16,6 +16,8 @@ internal object Calculator {
         calcKdj(entities, 9, 3, 3)
         calcRsi(entities, arrayOf(6, 12, 24))
         calcMacd(entities, 12, 26, 9)
+
+        return entities.toMutableList()
     }
 
     private fun calcRise(entities: List<ChartDataEntity>) {
