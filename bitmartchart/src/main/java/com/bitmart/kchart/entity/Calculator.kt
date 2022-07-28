@@ -14,7 +14,7 @@ internal object Calculator {
 
     fun calc(entities: List<ChartDataEntity>): MutableList<ChartDataEntity> {
         val local = entities.copyOf()
-        if (local.isEmpty()) emptyList<ChartDataEntity>()
+        if (local.isEmpty()) return mutableListOf()
         calcRise(local)
         calcMa(local, arrayOf(5, 10, 20))
         calcVolMa(local, arrayOf(5, 10))
