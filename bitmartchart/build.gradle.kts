@@ -45,7 +45,7 @@ dependencies {
     androidTestImplementation(test.androidTestEspresso)
 }
 
-afterEvaluate{
+afterEvaluate {
     publishing {
         publications {
 
@@ -53,7 +53,7 @@ afterEvaluate{
                 from(components["release"])
                 groupId = "com.bitmart.android"
                 artifactId = "k-chart"
-                version = "0.5"
+                version = "1.0.1"
             }
 
             repositories {

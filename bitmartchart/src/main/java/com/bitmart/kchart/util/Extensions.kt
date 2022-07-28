@@ -1,7 +1,6 @@
 package com.bitmart.kchart.util
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 
 fun Number.dp2px(context: Context): Float {

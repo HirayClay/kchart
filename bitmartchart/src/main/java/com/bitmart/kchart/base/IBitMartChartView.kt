@@ -49,4 +49,6 @@ interface IBitMartChartView {
 
     // 获取数据下标对应的屏幕点
     fun getDataScreenPointXbyIndex(index: Int): Float?
+
+    fun onPageShowNumChange(showPageNum: Int)
 }

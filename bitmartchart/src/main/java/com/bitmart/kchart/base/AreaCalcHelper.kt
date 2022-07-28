@@ -42,7 +42,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
         //总共要显示的条数
         val totalCount = view.getChartData().size
         //当前屏幕可显示的条数
-        val displayCount = (view.getGlobalProperties().showPageNum / totalScale).roundToInt()
+        val displayCount = (view.getGlobalProperties().pageShowNum / totalScale).roundToInt()
         //划过的条数
         val transCount = (getTotalTranslate() / (view.getGlobalProperties().eachWidth * totalScale)).toInt()
 
@@ -120,9 +120,8 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
 
     fun onTouchScaling(scaleFactor: Float) {
         val totalScale = getTotalScale()
-        val currentTotalScale = totalScale * scaleFactor
-        if (currentTotalScale < view.getGlobalProperties().maxScaleRatio && currentTotalScale > view.getGlobalProperties().minScaleRatio) {
-
+        val currentShowPageNum = view.getGlobalProperties().pageShowNum / (totalScale * scaleFactor)
+        if (currentShowPageNum < view.getGlobalProperties().pageMaxNumber && currentShowPageNum > view.getGlobalProperties().pageMinNumber) {
             tempMatrix.reset()
             tempMatrix.postScale(totalScale, 1f)
             tempMatrix.postScale(scaleFactor, 1f, focusX, 0f)
@@ -155,6 +154,8 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
                 return
             }
 
+            view.onPageShowNumChange(currentShowPageNum.roundToInt())
+
             canvasMatrix.postScale(scaleFactor, 1f, focusX, 0f)
             view.invalidate()
         }
@@ -165,7 +166,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
     }
 
     fun getMaxTranslateWidth(scale: Float): Float {
-        return view.getChartData().size * scale * view.getGlobalProperties().eachWidth - view.getGlobalProperties().showPageNum * view.getGlobalProperties().eachWidth + view.getGlobalProperties().rightAxisWidth.dp2px(view.getContext())
+        return view.getChartData().size * scale * view.getGlobalProperties().eachWidth - view.getGlobalProperties().pageShowNum * view.getGlobalProperties().eachWidth + view.getGlobalProperties().rightAxisWidth.dp2px(view.getContext())
     }
 
     fun getDataWidth(dataSize: Int): Float {
@@ -224,7 +225,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
     }
 
     fun getCurrentPageSize(): Int {
-       return (view.getGlobalProperties().showPageNum / getTotalScale()).roundToInt()
+        return (view.getGlobalProperties().pageShowNum / getTotalScale()).roundToInt()
     }
 }
 

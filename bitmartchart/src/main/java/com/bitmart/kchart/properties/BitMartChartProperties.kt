@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.bitmart.kchart.properties
 
 import com.bitmart.kchart.default.*
@@ -8,13 +10,13 @@ class GlobalProperties private constructor(
     //柱子之间的空间占比柱子宽度
     val barSpaceRatio: Float,
     //默认首屏展示的数据数量
-    val showPageNum: Int,
+    val pageShowNum: Int,
+    //一屏最大显示的数据条数
+    val pageMaxNumber: Int,
+    //一屏最小显示的数据条数
+    val pageMinNumber: Int,
     //头部所占的比例
     val headerRatio: Float,
-    //最大缩放比率
-    val maxScaleRatio: Float,
-    //最小缩放比率
-    val minScaleRatio: Float,
     //价格精度
     val priceAccuracy: Int,
     //指数精度
@@ -26,7 +28,7 @@ class GlobalProperties private constructor(
     //绘制空数据
     val drawEmptyView: Boolean,
     //国际化语言配置项
-    val languageConverter: ChartLanguageConverter,
+    val chartLanguage: ChartLanguage,
     //阳线
     private val riseColor: Int,
     private val riseDarkColor: Int,
@@ -67,16 +69,16 @@ class GlobalProperties private constructor(
         fun fromProperties(properties: BitMartChartProperties): GlobalProperties {
             return GlobalProperties(
                 barSpaceRatio = properties.barSpaceRatio,
-                showPageNum = properties.showPageNum,
+                pageShowNum = properties.showNum(),
                 headerRatio = properties.headerRatio,
-                maxScaleRatio = properties.maxScaleRatio,
-                minScaleRatio = properties.minScaleRatio,
+                pageMaxNumber = properties.pageMaxNumber,
+                pageMinNumber = properties.pageMinNumber,
                 priceAccuracy = properties.priceAccuracy,
                 indexAccuracy = properties.indexAccuracy,
                 countAccuracy = properties.countAccuracy,
                 rightAxisWidth = properties.rightAxisWidth,
                 drawEmptyView = properties.drawEmptyView,
-                languageConverter = properties.languageConverter,
+                chartLanguage = properties.chartLanguage,
                 riseColor = properties.riseColor,
                 riseDarkColor = properties.riseDarkColor,
                 downColor = properties.downColor,
@@ -90,9 +92,23 @@ class GlobalProperties private constructor(
     }
 }
 
+private fun BitMartChartProperties.showNum(): Int {
+    if (this.pageShowNum < this.pageMinNumber) return this.pageMinNumber
+    if (this.pageShowNum > this.pageMaxNumber) return this.pageMaxNumber
+    return this.pageShowNum
+}
+
 data class BitMartChartProperties(
-    //需要展示的视图配置
-    var chartRendererProperties: MutableList<IRendererProperties>,
+    //kline
+    var kLineRendererProperties: KLineRendererProperties = KLineRendererProperties(),
+    //vol
+    var volRendererProperties: VolRendererProperties? = null,
+    //macd
+    var macdRendererProperties: MacdRendererProperties? = null,
+    //kdj
+    var kdjRendererProperties: KdjRendererProperties? = null,
+    //rsi
+    var rsiRendererProperties: RsiRendererProperties? = null,
     //价格精度
     var priceAccuracy: Int = DEFAULT_PRICE_ACCURACY,
     //指数精度
@@ -104,13 +120,13 @@ data class BitMartChartProperties(
     //柱子之间的空间占比柱子宽度
     var barSpaceRatio: Float = DEFAULT_BAR_SPACE_RATIO,
     //默认首屏展示的数据数量
-    var showPageNum: Int = DEFAULT_SHOW_PAGE_NUM,
+    var pageShowNum: Int = DEFAULT_SHOW_PAGE_NUM,
     //头部标题占比
     var headerRatio: Float = DEFAULT_HEADER_RATIO,
-    //最大缩放比率
-    var maxScaleRatio: Float = DEFAULT_MAX_SCALE_RATIO,
-    //最小缩放比率
-    var minScaleRatio: Float = DEFAULT_MIN_SCALE_RATIO,
+    //一屏最大显示的数据条数
+    var pageMaxNumber: Int = DEFAULT_MAX_PAGE_SHOW_NUM,
+    //一屏最小显示的数据条数
+    var pageMinNumber: Int = DEFAULT_MIN_PAGE_SHOW_NUM,
     //阳线
     var riseColor: Int = DEFAULT_UP_COLOR,
     //黑暗主题阳线
@@ -130,7 +146,7 @@ data class BitMartChartProperties(
     //绘制空数据占位
     var drawEmptyView: Boolean = false,
     //国际化语言配置项
-    var languageConverter: ChartLanguageConverter = ChartLanguageEnglish(),
+    var chartLanguage: ChartLanguage = ChartLanguage.english(),
 )
 
 interface IRendererProperties {
@@ -138,37 +154,35 @@ interface IRendererProperties {
     var heightRatio: Float
 }
 
-abstract class ChartLanguageConverter {
-    abstract val date: String
-    abstract val open: String
-    abstract val close: String
-    abstract val high: String
-    abstract val low: String
-    abstract val change: String
-    abstract val changeRatio: String
-    abstract val amount: String
-}
+class ChartLanguage(
+    val date: String = "Date",
+    val open: String = "Open",
+    val close: String = "Close",
+    val high: String = "High",
+    val low: String = "Low",
+    val change: String = "Change",
+    val changeRatio: String = "Change%",
+    val amount: String = "Amount",
+) {
 
-class ChartLanguageEnglish : ChartLanguageConverter() {
-    override val date: String = "Date"
-    override val open: String = "Open"
-    override val close: String = "Close"
-    override val high: String = "High"
-    override val low: String = "Low"
-    override val change: String = "Change"
-    override val changeRatio: String = "Change%"
-    override val amount: String = "Amount"
-}
+    companion object {
+        fun chinese(): ChartLanguage {
+            return ChartLanguage(
+                date = "时间",
+                open = "开盘价",
+                close = "收盘价",
+                high = "最高",
+                low = "最低",
+                change = "涨跌额",
+                changeRatio = "涨跌幅",
+                amount = "成交量",
+            )
+        }
 
-class ChartLanguageChinese : ChartLanguageConverter() {
-    override val date: String = "时间"
-    override val open: String = "开盘价"
-    override val close: String = "收盘价"
-    override val high: String = "最高"
-    override val low: String = "最低"
-    override val change: String = "涨跌额"
-    override val changeRatio: String = "涨跌幅"
-    override val amount: String = "成交量"
+        fun english(): ChartLanguage {
+            return ChartLanguage()
+        }
+    }
 }
 
 data class KLineRendererProperties constructor(

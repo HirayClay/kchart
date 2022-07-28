@@ -19,10 +19,16 @@ import com.bitmart.kchart.util.dp2px
 import com.bitmart.kchart.util.getBackgroundColor
 import com.bitmart.kchart.util.isDarkMode
 import com.bitmart.kchart.util.sp2px
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.runBlocking
+import java.util.concurrent.Executors
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartChildViewBridge, LoadMoreListener {
+
+    private val listenerDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     private val canvasMatrix by lazy { Matrix() }
 
@@ -56,7 +62,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         setWillNotDraw(false)
         controller.setListener(this)
         areaCalcHelper.setListener(this)
-        covertProperties(DEFAULT_BIT_MART_CHART_PROPERTIES)
+        covertProperties(DEFAULT_BIT_MART_CHART_PROPERTIES, true)
     }
 
     private fun calcEachHeight(viewHeight: Int, viewWidth: Int) {
@@ -67,7 +73,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         val drawAreaHeight = (bottom - top)
         val drawAreaWidth = right - left
 
-        val eachWidth = drawAreaWidth / this.properties.showPageNum.toFloat()
+        val eachWidth = drawAreaWidth / this.properties.pageShowNum.toFloat()
         val itemWidth = eachWidth / (this.properties.barSpaceRatio + 1)
         val spaceWidth = itemWidth * this.properties.barSpaceRatio
 
@@ -89,18 +95,39 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         }
     }
 
-    private fun covertProperties(bitMartChartProperties: BitMartChartProperties) {
-        this.properties = GlobalProperties.fromProperties(bitMartChartProperties)
-        val calcProperties = mutableListOf<IRendererProperties>()
-        bitMartChartProperties.chartRendererProperties.filter { it !is DividerRendererProperties }.forEachIndexed { index, properties ->
-            if (index == 0) {
-                calcProperties.add(properties)
-            } else {
-                calcProperties.add(DividerRendererProperties())
-                calcProperties.add(properties)
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        listenerDispatcher.cancel()
+    }
+
+    private fun covertProperties(bitMartChartProperties: BitMartChartProperties, isDefault: Boolean = false) {
+        if (controller.chartChangeListener != null && !isDefault) {
+            runBlocking(listenerDispatcher) {
+                controller.chartChangeListener?.onChartPropertiesChange(bitMartChartProperties)
             }
         }
 
+        this.properties = GlobalProperties.fromProperties(bitMartChartProperties)
+        val calcProperties = mutableListOf<IRendererProperties>()
+
+        calcProperties.add(bitMartChartProperties.kLineRendererProperties)
+        calcProperties.add(DividerRendererProperties())
+        bitMartChartProperties.volRendererProperties?.let {
+            calcProperties.add(it)
+            calcProperties.add(DividerRendererProperties())
+        }
+        bitMartChartProperties.macdRendererProperties?.let {
+            calcProperties.add(it)
+            calcProperties.add(DividerRendererProperties())
+        }
+        bitMartChartProperties.rsiRendererProperties?.let {
+            calcProperties.add(it)
+            calcProperties.add(DividerRendererProperties())
+        }
+        bitMartChartProperties.kdjRendererProperties?.let {
+            calcProperties.add(it)
+            calcProperties.add(DividerRendererProperties())
+        }
         val renderers = calcProperties.mapNotNull {
             when (it) {
                 is KLineRendererProperties -> KLineRenderer(it, this)
@@ -279,6 +306,14 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         return areaCalcHelper.getDataScreenPointXbyIndex(index)
     }
 
+    override fun onPageShowNumChange(showPageNum: Int) {
+        if (controller.chartChangeListener != null) {
+            runBlocking(listenerDispatcher) {
+                controller.chartChangeListener?.onPageShowNumChange(showPageNum)
+            }
+        }
+    }
+
     override fun onDataSetChanged() {
         this.post {
             this.childRenders.forEach { renderer ->
@@ -303,7 +338,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
                 areaCalcHelper.setTranslate(0f)
             } else {
                 val oldDataSize = getChartData().size - newDataSize
-                val x = oldDataSize * getTotalScale() * getGlobalProperties().eachWidth - getGlobalProperties().showPageNum * getGlobalProperties().eachWidth + getGlobalProperties().rightAxisWidth.dp2px(context)
+                val x = oldDataSize * getTotalScale() * getGlobalProperties().eachWidth - getGlobalProperties().pageShowNum * getGlobalProperties().eachWidth + getGlobalProperties().rightAxisWidth.dp2px(context)
                 if (x <= 0) {
                     areaCalcHelper.setTranslate(-distanceX)
                 } else {
@@ -328,7 +363,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     fun setProperties(bitMartChartProperties: BitMartChartProperties) {
-        covertProperties(bitMartChartProperties)
+        covertProperties(bitMartChartProperties, false)
         calcEachHeight(height, width)
         requestLayout()
     }

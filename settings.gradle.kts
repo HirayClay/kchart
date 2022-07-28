@@ -68,7 +68,7 @@ dependencyResolutionManagement {
             alias("material").to("com.google.android.material:material:1.5.0")
             alias("activity").to("androidx.activity:activity-ktx:1.4.0")
             alias("viewmodel").to("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-            alias("lifecycle").to("androidx.lifecycle:lifecycle-runtime-ktx:+")
+            alias("lifecycle").to("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0")
             alias("room").to("androidx.room:room-runtime:$roomVersion")
             alias("roomKtx").to("androidx.room:room-ktx:$roomVersion")
             alias("roomPaging").to("androidx.room:room-paging:$roomVersion")

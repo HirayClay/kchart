@@ -8,12 +8,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bitmart.data.domain.model.KLineModel
 import com.bitmart.demo.R
+import com.bitmart.demo.util.ChartConfigCacheManager
 import com.bitmart.demo.viewmodel.MainActivityViewModel
 import com.bitmart.demo.viewmodel.MainActivityViewState
 import com.bitmart.kchart.BitMartChartView
 import com.bitmart.kchart.controller.BitMartChartViewController
+import com.bitmart.kchart.controller.ChartChangeListener
 import com.bitmart.kchart.entity.ChartDataEntity
-import com.bitmart.kchart.properties.*
+import com.bitmart.kchart.properties.BitMartChartProperties
+import com.bitmart.kchart.properties.RsiRendererProperties
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,26 +29,9 @@ class MainActivity : AppCompatActivity() {
 
     private val controller by lazy { BitMartChartViewController() }
 
-    private val kLineRendererProperties by lazy { KLineRendererProperties() }
-    private val volRendererProperties by lazy { VolRendererProperties() }
-    private val macdRendererProperties by lazy { MacdRendererProperties() }
-    private val kdjRendererProperties by lazy { KdjRendererProperties() }
-    private val rsiRendererProperties by lazy { RsiRendererProperties() }
+    private var tempCacheList = listOf<ChartDataEntity>()
 
-    private var tempCacheList = listOf<KLineModel>()
-
-    private val bitMartChartProperties by lazy {
-        BitMartChartProperties(
-            chartRendererProperties = mutableListOf(
-                kLineRendererProperties,
-                volRendererProperties,
-                macdRendererProperties,
-                kdjRendererProperties,
-                rsiRendererProperties,
-            ),
-            rightAxisWidth = 40f
-        )
-    }
+    private val cacheManager = ChartConfigCacheManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +52,9 @@ class MainActivity : AppCompatActivity() {
 
                         is MainActivityViewState.Success -> {
 
-                            tempCacheList = viewState.lineList
 
-                            var list = viewState.lineList.subList(0, 30).map {
+
+                            val list = viewState.lineList.map {
                                 val chartData = ChartDataEntity()
                                 chartData.high = it.high
                                 chartData.low = it.low
@@ -79,27 +65,16 @@ class MainActivity : AppCompatActivity() {
                                 chartData.time = it.time
                                 return@map chartData
                             }
+
+                            tempCacheList = list
+
                             controller.setChartData(list)
 
-                            controller.setLoadMoreFinish(false)
-
-                            delay(5000)
-
-                            list = viewState.lineList.subList(100, 200).map {
-                                val chartData = ChartDataEntity()
-                                chartData.high = it.high
-                                chartData.low = it.low
-                                chartData.open = it.open
-                                chartData.close = it.close
-                                chartData.vol = it.vol
-                                chartData.amount = it.amount
-                                chartData.time = it.time
-                                return@map chartData
-                            }
-                            controller.addOldChartData(list)
-
-                            controller.setLoadMoreFinish(true)
+                            startUpdateData()
                         }
+
+
+
 
                         is MainActivityViewState.Error -> {
 
@@ -110,13 +85,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun startUpdateData() {
+        lifecycleScope.launch {
+            while (true){
+                delay(10)
+                controller.addNewChartData(tempCacheList)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        lifecycleScope.launch {
+            cacheManager.storageData()
+        }
+    }
+
     private fun initData() {
+        lifecycleScope.launch {
+            tmv.setController(controller)
+            tmv.setProperties(cacheManager.setUp())
+        }
+
         controller.setLoadMoreListener {
             println("onLoadingMore")
             //mainActivityViewModel.loadArticlePageList(1)
         }
-        tmv.setController(controller)
-        tmv.setProperties(bitMartChartProperties)
+
+        controller.setChartChangeListener(object : ChartChangeListener {
+
+            override fun onPageShowNumChange(pageShowNum: Int) {
+                cacheManager.cachePageShowNum(pageShowNum)
+            }
+
+            override fun onChartPropertiesChange(properties: BitMartChartProperties) {
+                cacheManager.cacheProperties(properties)
+            }
+        })
+
         findViewById<Button>(R.id.btn_start).setOnClickListener {
             mainActivityViewModel.loadArticlePageList(1)
         }
@@ -128,18 +134,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_change_style).setOnClickListener {
-            tmv.setProperties(
-                bitMartChartProperties.apply {
-                    chartRendererProperties.apply {
-                        this[0] = kLineRendererProperties.apply {
-                            showType = KLineShowType.CANDLE_WITH_BOLL
-                            dataFormat = "dd HH:mm"
-                            showAxisYNum = 6
-                            showAxisXNum = 6
-                        }
-                    }
-                }
-            )
+            tmv.setProperties(cacheManager.properties.apply { rsiRendererProperties = RsiRendererProperties() })
         }
 
         findViewById<Button>(R.id.btn_update_newer).setOnClickListener {

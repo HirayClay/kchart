@@ -162,14 +162,14 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         val fontPadding = textPaint.fontMetrics.descent
 
         val info = listOf(
-            Triple("${bitMartChartView.getGlobalProperties().languageConverter.date}:", DateFormat.format(properties.dataFormat, dataEntity.time).toString(), false),
-            Triple("${bitMartChartView.getGlobalProperties().languageConverter.open}:", dataEntity.open.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
-            Triple("${bitMartChartView.getGlobalProperties().languageConverter.high}:", dataEntity.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
-            Triple("${bitMartChartView.getGlobalProperties().languageConverter.low}:", dataEntity.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
-            Triple("${bitMartChartView.getGlobalProperties().languageConverter.close}:", dataEntity.close.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
-            Triple("${bitMartChartView.getGlobalProperties().languageConverter.change}:", dataEntity.change.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), true),
-            Triple("${bitMartChartView.getGlobalProperties().languageConverter.changeRatio}:", "${dataEntity.ratio.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)}%", true),
-            Triple("${bitMartChartView.getGlobalProperties().languageConverter.amount}:", dataEntity.vol.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.date}:", DateFormat.format(properties.dataFormat, dataEntity.time).toString(), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.open}:", dataEntity.open.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.high}:", dataEntity.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.low}:", dataEntity.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.close}:", dataEntity.close.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.change}:", dataEntity.change.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), true),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.changeRatio}:", "${dataEntity.ratio.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)}%", true),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.amount}:", dataEntity.vol.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy), false),
         )
         val infoAreaMinWidth = info.maxOf { textPaint.measureText(it.first + it.second) }
         val infoAreaHeight = fontHeight * 8f

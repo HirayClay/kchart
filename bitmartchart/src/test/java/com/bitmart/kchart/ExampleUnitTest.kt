@@ -12,6 +12,13 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        assertEquals(2.0.toStringAsFixed(0), "2")
+    }
+
+   private fun Number?.toStringAsFixed(accuracy: Int): String {
+        val num = this ?: 0.0
+        if (accuracy <= 0) return num.toInt().toString()
+        val format = "%.${accuracy}f"
+        return String.format(format, num)
     }
 }
