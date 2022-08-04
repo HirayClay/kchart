@@ -15,8 +15,7 @@ import com.bitmart.kchart.BitMartChartView
 import com.bitmart.kchart.controller.BitMartChartViewController
 import com.bitmart.kchart.controller.ChartChangeListener
 import com.bitmart.kchart.entity.ChartDataEntity
-import com.bitmart.kchart.properties.BitMartChartProperties
-import com.bitmart.kchart.properties.RsiRendererProperties
+import com.bitmart.kchart.properties.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                         is MainActivityViewState.Success -> {
 
 
-
                             val list = viewState.lineList.map {
                                 val chartData = ChartDataEntity()
                                 chartData.high = it.high
@@ -70,8 +68,6 @@ class MainActivity : AppCompatActivity() {
 
                             controller.setChartData(list)
                         }
-
-
 
 
                         is MainActivityViewState.Error -> {
@@ -123,7 +119,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_change_style).setOnClickListener {
-            tmv.setProperties(cacheManager.properties.apply { rsiRendererProperties = RsiRendererProperties() })
+            tmv.setProperties(cacheManager.properties.apply {
+                pageShowNum = 10
+                volRendererProperties= VolRendererProperties()
+                kdjRendererProperties= KdjRendererProperties()
+                rsiRendererProperties= RsiRendererProperties()
+                macdRendererProperties= MacdRendererProperties()
+            })
         }
 
         findViewById<Button>(R.id.btn_update_newer).setOnClickListener {

@@ -2,6 +2,7 @@ package com.bitmart.demo.viewmodel
 
 import com.bitmart.data.domain.model.KLineModel
 import com.bitmart.data.domain.usecase.GetKLineListUseCase
+import com.bitmart.demo.mock.MockLine
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -18,6 +19,7 @@ class MainActivityViewModel(private val getKLineListUseCase: GetKLineListUseCase
     fun loadArticlePageList(pageNo: Int) {
         launchCoroutine {
             val lineList = getKLineListUseCase("BTCUSD_PERP", "1m", limit = 500)
+//            val lineList = MockLine.getMockKlineModel()
             uiStateFlow.value = MainActivityViewState.Success(lineList)
         }
     }

@@ -99,19 +99,25 @@ class VolRenderer(override val properties: VolRendererProperties, override val b
 
     //绘制柱状图
     private fun drawVol(canvas: Canvas, min: Double, max: Double, itemWidth: Float, curStartX: Float, curData: ChartDataEntity) {
+        //先绘制一丢丢
+        canvas.drawRect(
+            curStartX,
+            getMainFixedRect().top - 1,
+            curStartX + itemWidth,
+            getMainFixedRect().bottom,
+            if (curData.isRise) risePaint else downPaint
+        )
+
+        if (max - min <= 0.0) {
+            return
+        }
+
         val fixHeight = (max - curData.vol) / (max - min) * (getMainRect().height())
         canvas.drawRect(
             curStartX,
             getMainRect().top + fixHeight.toFloat(),
             curStartX + itemWidth,
             getMainRect().bottom,
-            if (curData.isRise) risePaint else downPaint
-        )
-        canvas.drawRect(
-            curStartX,
-            getMainFixedRect().top - 1,
-            curStartX + itemWidth,
-            getMainFixedRect().bottom,
             if (curData.isRise) risePaint else downPaint
         )
     }

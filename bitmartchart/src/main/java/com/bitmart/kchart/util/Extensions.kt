@@ -2,6 +2,8 @@ package com.bitmart.kchart.util
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
+import com.bitmart.kchart.BuildConfig
 
 fun Number.dp2px(context: Context): Float {
     val scale = context.resources.displayMetrics.density
@@ -37,4 +39,30 @@ fun Context.getBackgroundColor(): Int {
     val color = attributes.getColor(0, 0xFFFFFF)
     attributes.recycle()
     return color
+}
+
+fun Any.debug(message: Any? = null, level: Int = Log.INFO, throwable: Throwable? = null) {
+    if (!BuildConfig.DEBUG) return
+    val msg = message ?: "NULL"
+    when (level) {
+        Log.VERBOSE -> Log.v(this::class.java.simpleName, msg.toString(), throwable)
+        Log.DEBUG -> Log.d(this::class.java.simpleName, msg.toString(), throwable)
+        Log.INFO -> Log.i(this::class.java.simpleName, msg.toString(), throwable)
+        Log.WARN -> Log.w(this::class.java.simpleName, msg.toString(), throwable)
+        Log.ERROR -> Log.e(this::class.java.simpleName, msg.toString(), throwable)
+        Log.ASSERT -> Log.println(level, this::class.java.simpleName, "$msg \\n ${throwable.toString()}")
+    }
+}
+
+fun Any.debug(vararg msg: Any?, level: Int = Log.INFO, throwable: Throwable? = null) {
+    if (!BuildConfig.DEBUG) return
+    val message = msg.joinToString(separator = "  ====  ") { it.toString() }
+    when (level) {
+        Log.VERBOSE -> Log.v(this::class.java.simpleName, message, throwable)
+        Log.DEBUG -> Log.d(this::class.java.simpleName, message, throwable)
+        Log.INFO -> Log.i(this::class.java.simpleName, message, throwable)
+        Log.WARN -> Log.w(this::class.java.simpleName, message, throwable)
+        Log.ERROR -> Log.e(this::class.java.simpleName, message, throwable)
+        Log.ASSERT -> Log.println(level, this::class.java.simpleName, "$msg \\n ${throwable.toString()}")
+    }
 }
