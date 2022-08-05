@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.bitmart.demo.mock
 
 import com.bitmart.data.domain.model.KLineModel
@@ -7,11 +9,15 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-object MockLine{
+object MockLine {
+
+    private const val MOCK_ERROR_LINE_EMPTY = "mock_error_line_empty.json"
+    private const val MOCK_ERROR_LINE_ONE = "mock_error_line_one.json"
+
     suspend fun getMockKlineModel(): List<KLineModel> {
         return withContext(Dispatchers.IO) {
             val assetManager = MyApplication.instance.assets
-            val json = assetManager.open("mock_line.json").bufferedReader().readText()
+            val json = assetManager.open(MOCK_ERROR_LINE_EMPTY).bufferedReader().readText()
             val list = Gson().fromJson<List<MockKlineModel>>(json, object : TypeToken<List<MockKlineModel>>() {}.type)
             list.map { it.covertModel() }
         }

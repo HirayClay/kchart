@@ -1,9 +1,24 @@
+@file:Suppress("unused")
+
 package com.bitmart.kchart.util
 
 import android.content.Context
 import android.os.Build
 import android.util.Log
 import com.bitmart.kchart.BuildConfig
+
+
+fun Double.abs(): Double {
+    return kotlin.math.abs(this)
+}
+
+fun Float.abs(): Float {
+    return kotlin.math.abs(this)
+}
+
+fun Int.abs(): Int {
+    return kotlin.math.abs(this)
+}
 
 fun Number.dp2px(context: Context): Float {
     val scale = context.resources.displayMetrics.density
@@ -56,7 +71,7 @@ fun Any.debug(message: Any? = null, level: Int = Log.INFO, throwable: Throwable?
 
 fun Any.debug(vararg msg: Any?, level: Int = Log.INFO, throwable: Throwable? = null) {
     if (!BuildConfig.DEBUG) return
-    val message = msg.joinToString(separator = "  ====  ") { it.toString() }
+    val message = msg.joinToString(separator = "    ----    ") { it.toString() }
     when (level) {
         Log.VERBOSE -> Log.v(this::class.java.simpleName, message, throwable)
         Log.DEBUG -> Log.d(this::class.java.simpleName, message, throwable)

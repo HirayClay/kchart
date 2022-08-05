@@ -98,7 +98,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
     fun minOf(vararg num: Double?): Double {
         var min = Double.MAX_VALUE
         num.forEach { n ->
-            if (n != null && n != 0.0) {
+            n?.let {
                 min = min(min, n)
             }
         }
