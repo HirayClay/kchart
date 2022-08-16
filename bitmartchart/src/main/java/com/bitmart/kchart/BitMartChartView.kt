@@ -3,6 +3,7 @@ package com.bitmart.kchart
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -44,15 +45,17 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
 
     private var controller: BitMartChartViewController = BitMartChartViewController()
 
-    constructor(context: Context) : super(context) {
-        initView()
-    }
+    constructor(context: Context) : this(context, null)
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initView()
-    }
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        //https://developer.android.google.cn/guide/topics/graphics/hardware-accel.html#drawing-support 硬件加速文档
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            setLayerType(LAYER_TYPE_SOFTWARE, null)
+        } else {
+            setLayerType(LAYER_TYPE_HARDWARE, null)
+        }
         initView()
     }
 
