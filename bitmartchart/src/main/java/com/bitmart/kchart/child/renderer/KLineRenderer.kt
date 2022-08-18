@@ -9,6 +9,7 @@ import androidx.core.graphics.contains
 import com.bitmart.kchart.base.IBitMartChartView
 import com.bitmart.kchart.child.base.BaseRenderer
 import com.bitmart.kchart.entity.ChartDataEntity
+import com.bitmart.kchart.entity.SarEntity
 import com.bitmart.kchart.properties.KLineRendererProperties
 import com.bitmart.kchart.properties.KLineShowType
 import com.bitmart.kchart.util.toStringAsFixed
@@ -74,6 +75,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             KLineShowType.CANDLE_WITH_MA -> maxOf(dataEntity.high, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.ma[0], dataEntity.ma[1], dataEntity.ma[2])
             KLineShowType.CANDLE_WITH_EMA -> maxOf(dataEntity.high, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.ema[0], dataEntity.ema[1], dataEntity.ema[2])
             KLineShowType.CANDLE_WITH_BOLL -> maxOf(dataEntity.high, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.boll[0], dataEntity.boll[1], dataEntity.boll[2])
+            KLineShowType.CANDLE_WITH_SAR -> maxOf(dataEntity.high, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.sar.sar)
         }
     }
 
@@ -83,6 +85,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             KLineShowType.CANDLE_WITH_MA -> minOf(dataEntity.low, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.ma[0], dataEntity.ma[1], dataEntity.ma[2])
             KLineShowType.CANDLE_WITH_EMA -> minOf(dataEntity.low, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.ema[0], dataEntity.ema[1], dataEntity.ema[2])
             KLineShowType.CANDLE_WITH_BOLL -> minOf(dataEntity.low, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.boll[0], dataEntity.boll[1], dataEntity.boll[2])
+            KLineShowType.CANDLE_WITH_SAR -> minOf(dataEntity.high, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.sar.sar)
         }
     }
 
@@ -262,6 +265,11 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 textPaint.color = getIndexColor()[2]
                 canvas.drawText(data3, getHeaderRect().left + width1 + width2 + 20 + 20, getHeaderRect().bottom - fixTextHeight, textPaint)
             }
+            KLineShowType.CANDLE_WITH_SAR -> {
+                val data1 = "SAR:${dataEntity.sar.sar.toStringAsFixed(indexAccuracy)}"
+                textPaint.color = if (dataEntity.sar.rise) bitMartChartView.getGlobalProperties().riseColor() else bitMartChartView.getGlobalProperties().downColor()
+                canvas.drawText(data1, getHeaderRect().left, getHeaderRect().bottom - fixTextHeight, textPaint)
+            }
         }
     }
 
@@ -358,7 +366,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         maxEntity?.also {
             var maxDataScreenPointX = bitMartChartView.getDataScreenPointXbyIndex(bitMartChartView.getChartData().indexOf(maxEntity))
             if (maxDataScreenPointX != null) {
-                maxDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2
+                maxDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2 * bitMartChartView.getTotalScale()
                 val pointY = (getDrawDataRect().height() * (max - it.high) / (max - min)).toFloat() + getDrawDataRect().top
 
                 val lowPrice = it.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
@@ -383,6 +391,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             if (minDataScreenPointX != null) {
                 minDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2 * bitMartChartView.getTotalScale()
                 val pointY = (getDrawDataRect().height() * (max - it.low) / (max - min)).toFloat() + getDrawDataRect().top
+
                 val lowPrice = it.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
                 val textWidth = textPaint.measureText(lowPrice)
                 val lineWidth = textWidth / 1.6f * bitMartChartView.getTotalScale()
@@ -432,7 +441,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 linePaint.color = if (bitMartChartView.getGlobalProperties().isDarkMode) properties.timeLineDarkColor else properties.timeLineColor
                 drawLine(canvas, min, max, itemWidth, preStartX, preData?.close, curStartX, curData.close)
             }
-            KLineShowType.CANDLE_WITH_MA, KLineShowType.CANDLE_WITH_EMA, KLineShowType.CANDLE_WITH_BOLL -> drawCandle(canvas, min, max, itemWidth, preStartX, preData, curStartX, curData)
+            KLineShowType.CANDLE_WITH_MA, KLineShowType.CANDLE_WITH_EMA, KLineShowType.CANDLE_WITH_BOLL, KLineShowType.CANDLE_WITH_SAR -> drawCandle(canvas, min, max, itemWidth, preStartX, preData, curStartX, curData)
         }
     }
 
@@ -494,10 +503,38 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 linePaint.color = getIndexColor()[2]
                 drawLine(canvas, min, max, itemWidth, preStartX, preData?.boll?.get(2), curStartX, curData.boll[2])
             }
+            KLineShowType.CANDLE_WITH_SAR -> {
+                drawDot(canvas, min, max, itemWidth, preStartX, preData?.sar, curStartX, curData.sar)
+            }
             else -> {
 
             }
         }
+    }
+
+    private fun drawDot(canvas: Canvas, min: Double, max: Double, itemWidth: Float, preStartX: Float?, preData: SarEntity?, curStartX: Float, curData: SarEntity) {
+
+        if (preData == null || preStartX == null) {
+            return
+        }
+
+        val difHeight = (max - min)
+        val curDataHeight = max - curData.sar
+
+        linePaint.color = if (curData.rise) bitMartChartView.getGlobalProperties().riseColor() else bitMartChartView.getGlobalProperties().downColor()
+
+        if (preData.rise != curData.rise) {
+            linePaint.color = bitMartChartView.getGlobalProperties().textColor()
+        }
+
+        val radius = itemWidth / 2
+
+        val left = curStartX + itemWidth / 2 - radius / 2
+        val right = curStartX + itemWidth / 2 + radius / 2
+        val top = (getDrawDataRect().top + (curDataHeight.toFloat() / difHeight.toFloat() * getDrawDataRect().height())) - radius / 2 * bitMartChartView.getTotalScale()
+        val bottom = (getDrawDataRect().top + (curDataHeight.toFloat() / difHeight.toFloat() * getDrawDataRect().height())) + radius / 2 * bitMartChartView.getTotalScale()
+
+        canvas.drawOval(left, top, right, bottom, linePaint)
     }
 
     private fun drawLine(canvas: Canvas, min: Double, max: Double, itemWidth: Float, preStartX: Float?, preData: Double?, curStartX: Float, curData: Double?) {
@@ -510,9 +547,9 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         val curDataHeight = max - curData
 
         canvas.drawLine(
-            preStartX,
+            preStartX + itemWidth / 2,
             (getDrawDataRect().top + (preDataHeight.toFloat() / difHeight.toFloat() * getDrawDataRect().height())),
-            curStartX + itemWidth * bitMartChartView.getGlobalProperties().barSpaceRatio,
+            curStartX + itemWidth / 2,
             (getDrawDataRect().top + (curDataHeight.toFloat() / difHeight.toFloat() * getDrawDataRect().height())),
             linePaint
         )

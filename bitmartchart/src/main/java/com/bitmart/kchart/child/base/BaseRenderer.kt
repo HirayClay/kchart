@@ -55,7 +55,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
         val max = bitMartChartView.getChartData().subList(dataRange.first, dataRange.second + 1).maxOf(rangeMaxBy)
         chartData.forEachIndexed { index, dataEntity ->
             if (bitMartChartView.isDataInScreen(index)) {
-                drawData(dataRect, canvas, min, max, itemWidth, if (index == 0) null else (x - itemWidth), if (index == 0) null else chartData[index - 1], x, dataEntity)
+                drawData(dataRect, canvas, min, max, itemWidth, if (index == 0) null else (x - itemWidth - spaceWidth), if (index == 0) null else chartData[index - 1], x, dataEntity)
             }
             x += (spaceWidth + itemWidth)
         }

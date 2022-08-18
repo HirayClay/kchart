@@ -116,9 +116,9 @@ class RsiRenderer(override val properties: RsiRendererProperties, override val b
         val curDataHeight = max - curData
 
         canvas.drawLine(
-            preStartX,
+            preStartX + itemWidth / 2,
             (getMainRect().top + (preDataHeight.toFloat() / difHeight.toFloat() * getMainRect().height())),
-            curStartX + itemWidth * bitMartChartView.getGlobalProperties().barSpaceRatio,
+            curStartX + itemWidth / 2,
             (getMainRect().top + (curDataHeight.toFloat() / difHeight.toFloat() * getMainRect().height())),
             linePaint
         )

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bitmart.data.domain.model.KLineModel
 import com.bitmart.demo.R
 import com.bitmart.demo.util.ChartConfigCacheManager
 import com.bitmart.demo.viewmodel.MainActivityViewModel
@@ -16,7 +15,6 @@ import com.bitmart.kchart.controller.BitMartChartViewController
 import com.bitmart.kchart.controller.ChartChangeListener
 import com.bitmart.kchart.entity.ChartDataEntity
 import com.bitmart.kchart.properties.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -121,10 +119,13 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_change_style).setOnClickListener {
             tmv.setProperties(cacheManager.properties.apply {
                 pageShowNum = 10
-                volRendererProperties= VolRendererProperties()
-                kdjRendererProperties= KdjRendererProperties()
-                rsiRendererProperties= RsiRendererProperties()
-                macdRendererProperties= MacdRendererProperties()
+                kLineRendererProperties = KLineRendererProperties(
+                    showType = KLineShowType.CANDLE_WITH_SAR
+                )
+                volRendererProperties = VolRendererProperties()
+                kdjRendererProperties = KdjRendererProperties()
+                rsiRendererProperties = RsiRendererProperties()
+                macdRendererProperties = MacdRendererProperties()
             })
         }
 

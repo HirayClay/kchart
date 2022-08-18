@@ -211,6 +211,7 @@ enum class KLineShowType {
     CANDLE_WITH_MA,
     CANDLE_WITH_EMA,
     CANDLE_WITH_BOLL,
+    CANDLE_WITH_SAR,
 }
 
 data class VolRendererProperties constructor(

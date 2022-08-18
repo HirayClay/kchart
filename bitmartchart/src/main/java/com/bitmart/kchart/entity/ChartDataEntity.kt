@@ -59,6 +59,8 @@ class ChartDataEntity {
     //RSI指标
     internal var rsi: Array<Double?> = Array(3) { null }
 
+    //SAR指标
+    var sar: SarEntity = SarEntity(0.0, false)
 
     fun copy(): ChartDataEntity {
         return ChartDataEntity().apply {
