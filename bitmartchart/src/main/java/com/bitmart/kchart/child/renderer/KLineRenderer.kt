@@ -172,7 +172,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             Triple("${bitMartChartView.getGlobalProperties().chartLanguage.close}:", dataEntity.close.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
             Triple("${bitMartChartView.getGlobalProperties().chartLanguage.change}:", dataEntity.change.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), true),
             Triple("${bitMartChartView.getGlobalProperties().chartLanguage.changeRatio}:", "${dataEntity.ratio.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)}%", true),
-            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.amount}:", dataEntity.vol.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.vol}:", dataEntity.vol.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy), false),
         )
         val infoAreaMinWidth = info.maxOf { textPaint.measureText(it.first + it.second) }
         val infoAreaHeight = fontHeight * 8f

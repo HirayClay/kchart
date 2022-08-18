@@ -162,7 +162,7 @@ class ChartLanguage(
     val low: String = "Low",
     val change: String = "Change",
     val changeRatio: String = "Change%",
-    val amount: String = "Amount",
+    val vol: String = "Vol",
 ) {
 
     companion object {
@@ -175,7 +175,7 @@ class ChartLanguage(
                 low = "最低",
                 change = "涨跌额",
                 changeRatio = "涨跌幅",
-                amount = "成交量",
+                vol = "成交量",
             )
         }
 
