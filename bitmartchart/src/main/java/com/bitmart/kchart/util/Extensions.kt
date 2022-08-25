@@ -40,7 +40,7 @@ fun Number.px2sp(context: Context): Float {
     return this.toFloat() / fontScale + 0.5f
 }
 
-fun Number?.toStringAsFixed(accuracy: Int): String {
+internal fun Number?.toStringAsFixed(accuracy: Int): String {
     val num = this ?: 0.0
     if (accuracy <= 0) return num.toInt().toString()
     val format = "%.${accuracy}f"
@@ -56,7 +56,7 @@ fun Context.getBackgroundColor(): Int {
     return color
 }
 
-fun Any.debug(message: Any? = null, level: Int = Log.INFO, throwable: Throwable? = null) {
+internal fun Any.debug(message: Any? = null, level: Int = Log.INFO, throwable: Throwable? = null) {
     if (!BuildConfig.DEBUG) return
     val msg = message ?: "NULL"
     when (level) {
@@ -69,7 +69,7 @@ fun Any.debug(message: Any? = null, level: Int = Log.INFO, throwable: Throwable?
     }
 }
 
-fun Any.debug(vararg msg: Any?, level: Int = Log.INFO, throwable: Throwable? = null) {
+internal fun Any.debug(vararg msg: Any?, level: Int = Log.INFO, throwable: Throwable? = null) {
     if (!BuildConfig.DEBUG) return
     val message = msg.joinToString(separator = "    ----    ") { it.toString() }
     when (level) {
