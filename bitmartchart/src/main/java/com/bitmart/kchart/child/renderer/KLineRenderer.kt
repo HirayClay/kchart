@@ -439,10 +439,6 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
     private fun drawMaxAndMin(canvas: Canvas, min: Double, max: Double, dataList: List<ChartDataEntity>) {
 
-        if (!properties.showMaxAndMin) {
-            return
-        }
-
         textPaint.color = bitMartChartView.getGlobalProperties().textColor()
         textPaint.textSize = getFontSize()
         val fixTextHeight = (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4
@@ -464,49 +460,55 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 maxEntity = if (chartDataEntity.high > it.high) chartDataEntity else it
             }
         }
-        //绘制最高点
-        maxEntity?.also {
-            var maxDataScreenPointX = bitMartChartView.getDataScreenPointXbyIndex(bitMartChartView.getChartData().indexOf(maxEntity))
-            if (maxDataScreenPointX != null) {
-                maxDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2 * bitMartChartView.getTotalScale()
-                val pointY = (getDrawDataRect().height() * (max - it.high) / (max - min)).toFloat() + getDrawDataRect().top
 
-                val lowPrice = it.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
-                val textWidth = textPaint.measureText(lowPrice)
-                val lineWidth = textWidth / 1.6f * bitMartChartView.getTotalScale()
+        if (properties.showMaxPrice) {
+            //绘制最高点
+            maxEntity?.also {
+                var maxDataScreenPointX = bitMartChartView.getDataScreenPointXbyIndex(bitMartChartView.getChartData().indexOf(maxEntity))
+                if (maxDataScreenPointX != null) {
+                    maxDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2 * bitMartChartView.getTotalScale()
+                    val pointY = (getDrawDataRect().height() * (max - it.high) / (max - min)).toFloat() + getDrawDataRect().top
 
-                //在左边往右边绘制
-                if ((maxDataScreenPointX - getDrawDataRect().left) < rendererRect.width() / 2) {
-                    textPaint.textAlign = Paint.Align.LEFT
-                    canvas.drawLine(maxDataScreenPointX, pointY, maxDataScreenPointX + lineWidth, pointY, textPaint)
-                    canvas.drawText(lowPrice, maxDataScreenPointX + lineWidth, pointY + fixTextHeight, textPaint)
-                } else {
-                    textPaint.textAlign = Paint.Align.RIGHT
-                    canvas.drawLine(maxDataScreenPointX, pointY, maxDataScreenPointX - lineWidth, pointY, textPaint)
-                    canvas.drawText(lowPrice, maxDataScreenPointX - lineWidth, pointY + fixTextHeight, textPaint)
+                    val lowPrice = it.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
+                    val textWidth = textPaint.measureText(lowPrice)
+                    val lineWidth = textWidth / 1.6f * bitMartChartView.getTotalScale()
+
+                    //在左边往右边绘制
+                    if ((maxDataScreenPointX - getDrawDataRect().left) < rendererRect.width() / 2) {
+                        textPaint.textAlign = Paint.Align.LEFT
+                        canvas.drawLine(maxDataScreenPointX, pointY, maxDataScreenPointX + lineWidth, pointY, textPaint)
+                        canvas.drawText(lowPrice, maxDataScreenPointX + lineWidth, pointY + fixTextHeight, textPaint)
+                    } else {
+                        textPaint.textAlign = Paint.Align.RIGHT
+                        canvas.drawLine(maxDataScreenPointX, pointY, maxDataScreenPointX - lineWidth, pointY, textPaint)
+                        canvas.drawText(lowPrice, maxDataScreenPointX - lineWidth, pointY + fixTextHeight, textPaint)
+                    }
                 }
             }
         }
-        //绘制最低点
-        minEntity?.also {
-            var minDataScreenPointX = bitMartChartView.getDataScreenPointXbyIndex(bitMartChartView.getChartData().indexOf(minEntity))
-            if (minDataScreenPointX != null) {
-                minDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2 * bitMartChartView.getTotalScale()
-                val pointY = (getDrawDataRect().height() * (max - it.low) / (max - min)).toFloat() + getDrawDataRect().top
 
-                val lowPrice = it.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
-                val textWidth = textPaint.measureText(lowPrice)
-                val lineWidth = textWidth / 1.6f * bitMartChartView.getTotalScale()
+        if (properties.showMinPrice) {
+            //绘制最低点
+            minEntity?.also {
+                var minDataScreenPointX = bitMartChartView.getDataScreenPointXbyIndex(bitMartChartView.getChartData().indexOf(minEntity))
+                if (minDataScreenPointX != null) {
+                    minDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2 * bitMartChartView.getTotalScale()
+                    val pointY = (getDrawDataRect().height() * (max - it.low) / (max - min)).toFloat() + getDrawDataRect().top
 
-                //在左边往右边绘制
-                if ((minDataScreenPointX - getDrawDataRect().left) < rendererRect.width() / 2) {
-                    textPaint.textAlign = Paint.Align.LEFT
-                    canvas.drawLine(minDataScreenPointX, pointY, minDataScreenPointX + lineWidth, pointY, textPaint)
-                    canvas.drawText(lowPrice, minDataScreenPointX + lineWidth, pointY + fixTextHeight, textPaint)
-                } else {
-                    textPaint.textAlign = Paint.Align.RIGHT
-                    canvas.drawLine(minDataScreenPointX, pointY, minDataScreenPointX - lineWidth, pointY, textPaint)
-                    canvas.drawText(lowPrice, minDataScreenPointX - lineWidth, pointY + fixTextHeight, textPaint)
+                    val lowPrice = it.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
+                    val textWidth = textPaint.measureText(lowPrice)
+                    val lineWidth = textWidth / 1.6f * bitMartChartView.getTotalScale()
+
+                    //在左边往右边绘制
+                    if ((minDataScreenPointX - getDrawDataRect().left) < rendererRect.width() / 2) {
+                        textPaint.textAlign = Paint.Align.LEFT
+                        canvas.drawLine(minDataScreenPointX, pointY, minDataScreenPointX + lineWidth, pointY, textPaint)
+                        canvas.drawText(lowPrice, minDataScreenPointX + lineWidth, pointY + fixTextHeight, textPaint)
+                    } else {
+                        textPaint.textAlign = Paint.Align.RIGHT
+                        canvas.drawLine(minDataScreenPointX, pointY, minDataScreenPointX - lineWidth, pointY, textPaint)
+                        canvas.drawText(lowPrice, minDataScreenPointX - lineWidth, pointY + fixTextHeight, textPaint)
+                    }
                 }
             }
         }
