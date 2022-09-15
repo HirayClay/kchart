@@ -14,9 +14,12 @@ import com.bitmart.kchart.BitMartChartView
 import com.bitmart.kchart.controller.BitMartChartViewController
 import com.bitmart.kchart.controller.ChartChangeListener
 import com.bitmart.kchart.entity.ChartDataEntity
+import com.bitmart.kchart.entity.ChartExtraInfoEntity
+import com.bitmart.kchart.entity.PositionInfo
 import com.bitmart.kchart.properties.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -127,6 +130,10 @@ class MainActivity : AppCompatActivity() {
                 rsiRendererProperties = RsiRendererProperties()
                 macdRendererProperties = MacdRendererProperties()
             })
+
+
+            val updateRunnable = PositionUpdateRunnable()
+            it.postDelayed(updateRunnable, 1000)
         }
 
         findViewById<Button>(R.id.btn_update_newer).setOnClickListener {
@@ -138,6 +145,14 @@ class MainActivity : AppCompatActivity() {
                 entity.low = entity.low - 5
                 controller.updateNewerData(entity)
             }
+        }
+
+    }
+
+    inner class PositionUpdateRunnable : Runnable {
+        override fun run() {
+            controller.setChartExtraInfo(ChartExtraInfoEntity(positions = arrayListOf(PositionInfo(Random.nextFloat().toString(), Random.nextFloat().toString(), 20000.0, 0.002))))
+            this@MainActivity. findViewById<Button>(R.id.btn_change_style).postDelayed(this,1000)
         }
 
     }

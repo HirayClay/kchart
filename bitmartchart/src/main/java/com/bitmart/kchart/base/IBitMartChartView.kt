@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.PointF
 import android.graphics.Rect
 import com.bitmart.kchart.entity.ChartDataEntity
+import com.bitmart.kchart.entity.ChartExtraInfoEntity
 import com.bitmart.kchart.properties.GlobalProperties
 
 interface IBitMartChartView {
@@ -16,6 +17,8 @@ interface IBitMartChartView {
 
     //获取数据
     fun getChartData(): List<ChartDataEntity>
+
+    fun getChartExtraData():ChartExtraInfoEntity?
 
     //获取总缩放比
     fun getTotalScale(): Float

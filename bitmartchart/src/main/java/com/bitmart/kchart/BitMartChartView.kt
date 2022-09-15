@@ -15,6 +15,7 @@ import com.bitmart.kchart.controller.BitMartChildViewBridge
 import com.bitmart.kchart.default.DEFAULT_BIT_MART_CHART_PROPERTIES
 import com.bitmart.kchart.default.DEFAULT_CHART_RATIO_HEIGHT
 import com.bitmart.kchart.entity.ChartDataEntity
+import com.bitmart.kchart.entity.ChartExtraInfoEntity
 import com.bitmart.kchart.properties.*
 import com.bitmart.kchart.util.dp2px
 import com.bitmart.kchart.util.getBackgroundColor
@@ -262,6 +263,10 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         return controller.getChartData()
     }
 
+    override fun getChartExtraData(): ChartExtraInfoEntity? {
+        return controller.getChartExtraInfo()
+    }
+
     override fun getTotalScale(): Float {
         return areaCalcHelper.getTotalScale()
     }
@@ -358,6 +363,10 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
 
     override fun getCurrentPageSize(): Int {
         return areaCalcHelper.getCurrentPageSize()
+    }
+
+    override fun onSetChartExtraInfo(entity: ChartExtraInfoEntity?) {
+        this.invalidate()
     }
 
     fun setController(controller: BitMartChartViewController) {

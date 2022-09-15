@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.RectF
 import com.bitmart.kchart.entity.ChartDataEntity
+import com.bitmart.kchart.entity.ChartExtraInfoEntity
 import com.bitmart.kchart.properties.IRendererProperties
 import kotlin.math.max
 import kotlin.math.min
@@ -65,6 +66,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
     override fun noCovertDraw(canvas: Canvas, chartData: List<ChartDataEntity>, startX: Float, spaceWidth: Float, itemWidth: Float) {
         canvas.save()
         drawAxis(rendererRect, canvas)
+        drawExtraInfo(rendererRect,canvas,bitMartChartView.getChartExtraData())
         val highlightingPoint = bitMartChartView.getHighlightingPoint()
         if (highlightingPoint == null) {
             drawHeader(rendererRect, canvas, chartData.last())
@@ -112,6 +114,10 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
 
     //绘制坐标轴
     open fun drawAxis(renderRect: RectF, canvas: Canvas) {
+
+    }
+
+    open fun drawExtraInfo(renderRect: RectF, canvas: Canvas, extraInfoEntity: ChartExtraInfoEntity?) {
 
     }
 

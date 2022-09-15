@@ -5,6 +5,7 @@ package com.bitmart.kchart.controller
 import androidx.annotation.WorkerThread
 import com.bitmart.kchart.entity.Calculator
 import com.bitmart.kchart.entity.ChartDataEntity
+import com.bitmart.kchart.entity.ChartExtraInfoEntity
 import com.bitmart.kchart.properties.BitMartChartProperties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,10 +14,20 @@ class BitMartChartViewController {
     private var call: BitMartChildViewBridge? = null
     internal var loadMoreListener: (() -> Unit)? = null
     internal var chartChangeListener: ChartChangeListener? = null
+    private var chartExtraInfoEntity: ChartExtraInfoEntity? = null
     private var chartDataEntities = mutableListOf<ChartDataEntity>()
 
     fun getChartData(): List<ChartDataEntity> {
         return chartDataEntities
+    }
+
+    fun getChartExtraInfo(): ChartExtraInfoEntity? {
+        return chartExtraInfoEntity
+    }
+
+    fun setChartExtraInfo(entity: ChartExtraInfoEntity?) {
+        chartExtraInfoEntity = entity
+        call?.onSetChartExtraInfo(entity)
     }
 
     //更新最新一条数据

@@ -1,14 +1,13 @@
 package com.bitmart.kchart.child.renderer
 
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PointF
-import android.graphics.RectF
+import android.graphics.*
 import android.text.format.DateFormat
 import androidx.core.graphics.contains
 import com.bitmart.kchart.base.IBitMartChartView
 import com.bitmart.kchart.child.base.BaseRenderer
 import com.bitmart.kchart.entity.ChartDataEntity
+import com.bitmart.kchart.entity.ChartExtraInfoEntity
+import com.bitmart.kchart.entity.PositionInfo
 import com.bitmart.kchart.entity.SarEntity
 import com.bitmart.kchart.properties.KLineRendererProperties
 import com.bitmart.kchart.properties.KLineShowType
@@ -54,6 +53,16 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             isDither = true
             strokeCap = Paint.Cap.ROUND
             isAntiAlias = true
+        }
+    }
+
+    private val dashLinePaint by lazy {
+        Paint().apply {
+            style = Paint.Style.STROKE
+            isDither = true
+            strokeCap = Paint.Cap.ROUND
+            isAntiAlias = true
+            pathEffect = DashPathEffect(floatArrayOf(6f, 5f), 0f)
         }
     }
 
@@ -273,6 +282,90 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         }
     }
 
+
+    override fun drawExtraInfo(renderRect: RectF, canvas: Canvas, extraInfoEntity: ChartExtraInfoEntity?) {
+        drawUserPositions(renderRect, canvas, extraInfoEntity?.positions)
+    }
+
+    private fun drawUserPositions(renderRect: RectF, canvas: Canvas, positions: List<PositionInfo>?) {
+
+        if (!properties.showExtraInfo) {
+            return
+        }
+
+        if (positions == null || positions.isEmpty()) return
+
+        val dataRange = bitMartChartView.getDataInScreenRange()
+        if (dataRange.first == dataRange.second) {
+            return
+        }
+
+        val chartData = bitMartChartView.getChartData()
+        val min = chartData.subList(dataRange.first, dataRange.second + 1).minOf(rangeMinBy)
+        val max = chartData.subList(dataRange.first, dataRange.second + 1).maxOf(rangeMaxBy)
+
+        val textPadding = 10
+
+        positions.forEach {
+
+            val pointY = (getDrawDataRect().top + (max - it.price) / (max - min) * getDrawDataRect().height()).toFloat()
+            if (!getDrawDataRect().contains(PointF(getDrawDataRect().height() / 2 + getDrawDataRect().top, pointY))) {
+                return
+            }
+
+            linePaint.color = if (it.pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
+
+            val pnlWidth = textPaint.measureText(it.pnl)
+            val holdingWidth = textPaint.measureText(it.holding)
+
+            /*绘制白色背景*/
+            textPaint.color = Color.WHITE
+            canvas.drawRoundRect(
+                renderRect.left + 1,
+                pointY - (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 - textPadding,
+                renderRect.left + 1 + pnlWidth + holdingWidth + textPadding * 4,
+                pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 + textPadding,
+                4f,
+                4f,
+                textPaint,
+            )
+            /*绘制矩形框*/
+            canvas.drawRoundRect(
+                renderRect.left + 1,
+                pointY - (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 - textPadding,
+                renderRect.left + 1 + pnlWidth + holdingWidth + textPadding * 4,
+                pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 + textPadding,
+                4f,
+                4f,
+                linePaint,
+            )
+            /*绘制未实现盈亏*/
+            textPaint.color = if (it.pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
+            textPaint.textSize = getFontSize()
+            textPaint.textAlign = Paint.Align.LEFT
+            canvas.drawText(it.pnl, rendererRect.left + 1 + textPadding, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
+
+            /*绘制当前持仓背景*/
+            canvas.drawRoundRect(
+                rendererRect.left + 1 + textPadding * 2 + pnlWidth,
+                pointY - (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 - textPadding,
+                renderRect.left + 1 + pnlWidth + holdingWidth + textPadding * 4,
+                pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 + textPadding,
+                4f,
+                4f,
+                textPaint
+            )
+
+            /*绘制当前持仓*/
+            textPaint.color = Color.WHITE
+            canvas.drawText(it.holding, rendererRect.left + 1 + textPadding * 3 + pnlWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
+
+            /*绘制价格线*/
+            dashLinePaint.color = if (it.pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
+            canvas.drawLine(renderRect.left + 1 + pnlWidth + holdingWidth + textPadding * 4, pointY, renderRect.right, pointY, dashLinePaint)
+        }
+    }
+
     override fun drawAxis(renderRect: RectF, canvas: Canvas) {
         super.drawAxis(renderRect, canvas)
         //绘制横轴
@@ -284,6 +377,11 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
     }
 
     private fun drawNowPrice(renderRect: RectF, canvas: Canvas) {
+
+        if (!properties.showNowPrice) {
+            return
+        }
+
         val dataRange = bitMartChartView.getDataInScreenRange()
         if (dataRange.first == dataRange.second) {
             return
@@ -340,6 +438,10 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
     }
 
     private fun drawMaxAndMin(canvas: Canvas, min: Double, max: Double, dataList: List<ChartDataEntity>) {
+
+        if (!properties.showMaxAndMin) {
+            return
+        }
 
         textPaint.color = bitMartChartView.getGlobalProperties().textColor()
         textPaint.textSize = getFontSize()

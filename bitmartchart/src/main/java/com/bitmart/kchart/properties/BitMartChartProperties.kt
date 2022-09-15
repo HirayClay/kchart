@@ -202,8 +202,13 @@ data class KLineRendererProperties constructor(
     //指数颜色
     var indexColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR),
     //黑暗主题指数颜色；
-    var indexDarkColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)
-
+    var indexDarkColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR),
+    //是否显示当前价格
+    var showNowPrice: Boolean = true,
+    //是否显示最高最低价格
+    var showMaxAndMin: Boolean = true,
+    //是否显示额外信息
+    var showExtraInfo: Boolean = true,
 ) : IRendererProperties
 
 enum class KLineShowType {
