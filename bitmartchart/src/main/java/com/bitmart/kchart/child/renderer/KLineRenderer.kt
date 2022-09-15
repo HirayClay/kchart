@@ -319,7 +319,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             val holdingWidth = textPaint.measureText(it.holding)
 
             /*绘制白色背景*/
-            textPaint.color = Color.WHITE
+            textPaint.color = bitMartChartView.getGlobalProperties().backgroundColor
             canvas.drawRoundRect(
                 renderRect.left + 1,
                 pointY - (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 - textPadding,
@@ -357,7 +357,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             )
 
             /*绘制当前持仓*/
-            textPaint.color = Color.WHITE
+            textPaint.color = bitMartChartView.getGlobalProperties().textColor()
             canvas.drawText(it.holding, rendererRect.left + 1 + textPadding * 3 + pnlWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
 
             /*绘制价格线*/
