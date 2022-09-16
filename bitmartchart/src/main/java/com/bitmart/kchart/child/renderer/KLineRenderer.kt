@@ -11,6 +11,7 @@ import com.bitmart.kchart.entity.PositionInfo
 import com.bitmart.kchart.entity.SarEntity
 import com.bitmart.kchart.properties.KLineRendererProperties
 import com.bitmart.kchart.properties.KLineShowType
+import com.bitmart.kchart.util.addPlusSign
 import com.bitmart.kchart.util.toStringAsFixed
 import kotlin.math.abs
 import kotlin.math.max
@@ -315,9 +316,14 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             }
 
             val price = it.price.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
-            linePaint.color = if (it.pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
+            val pnl = it.pnl.addPlusSign()
 
-            val pnlWidth = textPaint.measureText(it.pnl)
+            linePaint.color = when (it.way) {
+                PositionInfo.Way.LONG -> bitMartChartView.getGlobalProperties().riseColor()
+                PositionInfo.Way.SHORT -> bitMartChartView.getGlobalProperties().downColor()
+            }
+
+            val pnlWidth = textPaint.measureText(pnl)
             val priceWidth = textPaint.measureText(price)
             val holdingWidth = textPaint.measureText(it.holding)
 
@@ -343,10 +349,15 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 linePaint,
             )
             /*绘制未实现盈亏*/
-            textPaint.color = if (it.pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
+            textPaint.color = if (pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
             textPaint.textSize = getFontSize()
             textPaint.textAlign = Paint.Align.LEFT
-            canvas.drawText(it.pnl, rendererRect.left + 1 + textPadding, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
+            canvas.drawText(pnl, rendererRect.left + 1 + textPadding, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
+
+            textPaint.color = when (it.way) {
+                PositionInfo.Way.LONG -> bitMartChartView.getGlobalProperties().riseColor()
+                PositionInfo.Way.SHORT -> bitMartChartView.getGlobalProperties().downColor()
+            }
 
             /*绘制当前持仓背景*/
             canvas.drawRoundRect(
@@ -375,13 +386,16 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             path.close()
             canvas.drawPath(path, textPaint)
 
-            textPaint.color = bitMartChartView.getGlobalProperties().textColor()
+            textPaint.color = Color.WHITE
             /*绘制当前持仓*/
             canvas.drawText(it.holding, rendererRect.left + 1 + textPadding * 3 + pnlWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
             /*绘制持仓价格*/
             canvas.drawText(price, rendererRect.right - priceWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
             /*绘制价格线*/
-            dashLinePaint.color = if (it.pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
+            dashLinePaint.color = when (it.way) {
+                PositionInfo.Way.LONG -> bitMartChartView.getGlobalProperties().riseColor()
+                PositionInfo.Way.SHORT -> bitMartChartView.getGlobalProperties().downColor()
+            }
             canvas.drawLine(renderRect.left + 1 + pnlWidth + holdingWidth + textPadding * 4, pointY, renderRect.right - textPadding * 1.5f - priceWidth, pointY, dashLinePaint)
 
         }
@@ -439,7 +453,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         path.close()
         canvas.drawPath(path, textPaint)
 
-        textPaint.color = bitMartChartView.getGlobalProperties().textColor()
+        textPaint.color = Color.WHITE
         canvas.drawText(nowPrice, rendererRect.right - textWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
         canvas.drawLine(renderRect.left, pointY, renderRect.right - textPadding * 1.5f - textWidth, pointY, linePaint)
     }

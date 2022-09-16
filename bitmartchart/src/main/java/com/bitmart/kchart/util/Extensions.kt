@@ -47,6 +47,22 @@ internal fun Number?.toStringAsFixed(accuracy: Int): String {
     return String.format(format, num)
 }
 
+private val zeroRegex = Regex("^[0]+\\.*[0]*$")
+private val additiveRegex = Regex("^[0-9]+\\.*[0-9]*$")
+
+internal fun String.addPlusSign(): String {
+
+    if (this.matches(zeroRegex)) {
+        return this
+    }
+
+    if (this.matches(additiveRegex)) {
+        return "+$this"
+    }
+
+    return this
+}
+
 fun Context.isDarkMode() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) resources.configuration.isNightModeActive else resources.configuration.uiMode == 0x21
 
 fun Context.getBackgroundColor(): Int {

@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
     inner class PositionUpdateRunnable : Runnable {
         override fun run() {
-            controller.setChartExtraInfo(ChartExtraInfoEntity(positions = arrayListOf(PositionInfo(Random.nextFloat().toString(), Random.nextFloat().toString(), 19750.0, 0.002))))
+            controller.setChartExtraInfo(ChartExtraInfoEntity(positions = arrayListOf(PositionInfo(Random.nextFloat().toString(), Random.nextFloat().toString(), 19750.0, 0.002, PositionInfo.Way.LONG))))
             this@MainActivity.findViewById<Button>(R.id.btn_change_style).postDelayed(this, 1000)
         }
 

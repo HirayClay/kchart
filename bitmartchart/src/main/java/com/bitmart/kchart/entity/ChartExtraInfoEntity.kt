@@ -13,4 +13,11 @@ data class PositionInfo(
     val price: Double,
     //收益率 0.001 = 0.1%
     val earningRate: Double,
-)
+    //方向
+    val way: Way
+) {
+    enum class Way {
+        LONG,
+        SHORT,
+    }
+}
