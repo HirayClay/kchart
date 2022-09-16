@@ -22,6 +22,9 @@ private const val CANDLE_MIN_HEIGHT = 1f
 
 class KLineRenderer(override val properties: KLineRendererProperties, override val bitMartChartView: IBitMartChartView) : BaseRenderer<KLineRendererProperties>() {
 
+
+    private val textPadding = 10
+
     private val textPaint by lazy {
         Paint().apply {
             style = Paint.Style.FILL
@@ -304,8 +307,6 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         val min = chartData.subList(dataRange.first, dataRange.second + 1).minOf(rangeMinBy)
         val max = chartData.subList(dataRange.first, dataRange.second + 1).maxOf(rangeMaxBy)
 
-        val textPadding = 10
-
         positions.forEach {
 
             val pointY = (getDrawDataRect().top + (max - it.price) / (max - min) * getDrawDataRect().height()).toFloat()
@@ -313,9 +314,11 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 return
             }
 
+            val price = it.price.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
             linePaint.color = if (it.pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
 
             val pnlWidth = textPaint.measureText(it.pnl)
+            val priceWidth = textPaint.measureText(price)
             val holdingWidth = textPaint.measureText(it.holding)
 
             /*绘制白色背景*/
@@ -356,13 +359,31 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 textPaint
             )
 
-            /*绘制当前持仓*/
-            textPaint.color = bitMartChartView.getGlobalProperties().textColor()
-            canvas.drawText(it.holding, rendererRect.left + 1 + textPadding * 3 + pnlWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
+            /*绘制持仓价格背景*/
+            canvas.drawRect(
+                renderRect.right - priceWidth,
+                pointY - (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 - textPadding,
+                renderRect.right,
+                pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 + textPadding,
+                textPaint
+            )
+            /*绘制持仓价格背景三角*/
+            val path = Path()
+            path.moveTo(renderRect.right - textPadding * 1.5f - priceWidth, pointY)
+            path.lineTo(renderRect.right - priceWidth, pointY - (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 - textPadding)
+            path.lineTo(renderRect.right - priceWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 + textPadding)
+            path.close()
+            canvas.drawPath(path, textPaint)
 
+            textPaint.color = bitMartChartView.getGlobalProperties().textColor()
+            /*绘制当前持仓*/
+            canvas.drawText(it.holding, rendererRect.left + 1 + textPadding * 3 + pnlWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
+            /*绘制持仓价格*/
+            canvas.drawText(price, rendererRect.right - priceWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
             /*绘制价格线*/
             dashLinePaint.color = if (it.pnl.startsWith("-")) bitMartChartView.getGlobalProperties().downColor() else bitMartChartView.getGlobalProperties().riseColor()
-            canvas.drawLine(renderRect.left + 1 + pnlWidth + holdingWidth + textPadding * 4, pointY, renderRect.right, pointY, dashLinePaint)
+            canvas.drawLine(renderRect.left + 1 + pnlWidth + holdingWidth + textPadding * 4, pointY, renderRect.right - textPadding * 1.5f - priceWidth, pointY, dashLinePaint)
+
         }
     }
 
@@ -401,8 +422,26 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         textPaint.textAlign = Paint.Align.LEFT
         val nowPrice = chartData.last().close.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
         val textWidth = textPaint.measureText(nowPrice)
-        canvas.drawLine(rendererRect.left + textWidth, pointY, renderRect.right, pointY, linePaint)
-        canvas.drawText(nowPrice, rendererRect.left, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
+
+        /*绘制持仓价格背景*/
+        canvas.drawRect(
+            renderRect.right - textWidth,
+            pointY - (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 - textPadding,
+            renderRect.right,
+            pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 + textPadding,
+            textPaint
+        )
+        /*绘制持仓价格背景三角*/
+        val path = Path()
+        path.moveTo(renderRect.right - textPadding * 1.5f - textWidth, pointY)
+        path.lineTo(renderRect.right - textWidth, pointY - (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 - textPadding)
+        path.lineTo(renderRect.right - textWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4 + textPadding)
+        path.close()
+        canvas.drawPath(path, textPaint)
+
+        textPaint.color = bitMartChartView.getGlobalProperties().textColor()
+        canvas.drawText(nowPrice, rendererRect.right - textWidth, pointY + (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
+        canvas.drawLine(renderRect.left, pointY, renderRect.right - textPadding * 1.5f - textWidth, pointY, linePaint)
     }
 
     private fun drawAxisY(canvas: Canvas) {
