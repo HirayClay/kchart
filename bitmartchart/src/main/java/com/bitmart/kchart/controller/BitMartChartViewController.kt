@@ -32,8 +32,7 @@ class BitMartChartViewController {
 
     //更新最新一条数据
     suspend fun updateNewerData(entity: ChartDataEntity) {
-        chartDataEntities.removeLast()
-        chartDataEntities.add(entity)
+        withContext(Dispatchers.Main) { chartDataEntities.removeLast();chartDataEntities.add(entity) }
         if (chartDataEntities.isEmpty()) return
         chartDataEntities = withContext(Dispatchers.IO) { Calculator.calc(chartDataEntities) }
         call?.onDataSetAdd(0)
@@ -42,15 +41,14 @@ class BitMartChartViewController {
 
     //添加一条新数据
     suspend fun addNewData(entity: ChartDataEntity) {
-        chartDataEntities.add(entity)
+        withContext(Dispatchers.Main) { chartDataEntities.add(entity) }
         chartDataEntities = withContext(Dispatchers.IO) { Calculator.calc(chartDataEntities) }
         call?.onDataSetAdd(1)
     }
 
     //设置数据
     suspend fun setChartData(entities: List<ChartDataEntity>) {
-        chartDataEntities.clear()
-        chartDataEntities.addAll(entities)
+        withContext(Dispatchers.Main) { chartDataEntities.clear();chartDataEntities.addAll(entities) }
         chartDataEntities = withContext(Dispatchers.IO) { Calculator.calc(chartDataEntities) }
         call?.onDataSetChanged()
     }
@@ -61,7 +59,7 @@ class BitMartChartViewController {
             setChartData(entities)
             return
         }
-        chartDataEntities.addAll(entities)
+        withContext(Dispatchers.Main) { chartDataEntities.addAll(entities) }
         chartDataEntities = withContext(Dispatchers.IO) { Calculator.calc(chartDataEntities) }
         call?.onDataSetAdd(if (chartDataEntities.size == 0) 0 else entities.size)
     }
@@ -73,7 +71,7 @@ class BitMartChartViewController {
             setChartData(entities)
             return
         }
-        chartDataEntities.addAll(0, entities)
+        withContext(Dispatchers.Main) { chartDataEntities.addAll(0, entities) }
         chartDataEntities = withContext(Dispatchers.IO) { Calculator.calc(chartDataEntities) }
         call?.onDataSetAdd(if (chartDataEntities.size == 0) 0 else entities.size)
     }

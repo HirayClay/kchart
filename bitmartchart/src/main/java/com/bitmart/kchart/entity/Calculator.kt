@@ -4,13 +4,8 @@ import kotlin.math.*
 
 internal object Calculator {
 
-    private fun <T> List<T>.copyOf(): MutableList<T> {
-        val original = this
-        return mutableListOf<T>().apply { addAll(original) }
-    }
-
     fun calc(entities: List<ChartDataEntity>): MutableList<ChartDataEntity> {
-        val local = entities.copyOf()
+        val local = entities.toMutableList()
         if (local.isEmpty()) return mutableListOf()
         calcRise(local)
         calcMa(local, arrayOf(5, 10, 20))
