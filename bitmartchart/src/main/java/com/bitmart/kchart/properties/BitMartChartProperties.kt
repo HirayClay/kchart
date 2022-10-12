@@ -147,7 +147,17 @@ data class BitMartChartProperties(
     var drawEmptyView: Boolean = false,
     //国际化语言配置项
     var chartLanguage: ChartLanguage = ChartLanguage.english(),
-)
+) {
+    fun deepCopy(): BitMartChartProperties {
+        return this.copy(
+            kLineRendererProperties = kLineRendererProperties.copy(),
+            volRendererProperties = volRendererProperties?.copy(),
+            macdRendererProperties = macdRendererProperties?.copy(),
+            kdjRendererProperties = kdjRendererProperties?.copy(),
+            rsiRendererProperties = rsiRendererProperties?.copy(),
+        )
+    }
+}
 
 interface IRendererProperties {
     //高度权重
