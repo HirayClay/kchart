@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_change_style).setOnClickListener {
-            tmv.setProperties(cacheManager.properties.apply {
+            tmv.setProperties(tmv.bitMartChartProperties.apply {
                 pageShowNum = 10
                 kLineRendererProperties = KLineRendererProperties(
                     showType = KLineShowType.CANDLE_WITH_SAR,

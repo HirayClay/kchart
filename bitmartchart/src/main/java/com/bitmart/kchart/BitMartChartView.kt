@@ -46,6 +46,9 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
 
     private var controller: BitMartChartViewController = BitMartChartViewController()
 
+    var bitMartChartProperties: BitMartChartProperties = BitMartChartProperties()
+        private set
+
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
