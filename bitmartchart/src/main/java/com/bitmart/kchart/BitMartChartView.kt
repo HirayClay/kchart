@@ -378,6 +378,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     fun setProperties(bitMartChartProperties: BitMartChartProperties) {
+        this.bitMartChartProperties =bitMartChartProperties
         covertProperties(bitMartChartProperties, false)
         calcEachHeight(height, width)
         requestLayout()
