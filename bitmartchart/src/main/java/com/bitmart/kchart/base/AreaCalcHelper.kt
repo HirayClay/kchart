@@ -61,7 +61,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
                         }
                     }
                 }
-                transCount < 0 -> {
+                else -> {
                     return when {
                         totalCount <= abs(transCount) -> {
                             Pair(-1, -1)
@@ -121,7 +121,7 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
     fun onTouchScaling(scaleFactor: Float) {
         val totalScale = getTotalScale()
         val currentShowPageNum = view.getGlobalProperties().pageShowNum / (totalScale * scaleFactor)
-        if (currentShowPageNum < view.getGlobalProperties().pageMaxNumber && currentShowPageNum > view.getGlobalProperties().pageMinNumber) {
+        if (scaleFactor < 1f && currentShowPageNum < view.getGlobalProperties().pageMaxNumber || scaleFactor > 1f && currentShowPageNum > view.getGlobalProperties().pageMinNumber) {
             tempMatrix.reset()
             tempMatrix.postScale(totalScale, 1f)
             tempMatrix.postScale(scaleFactor, 1f, focusX, 0f)
@@ -217,6 +217,11 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
     fun setTranslate(distanceX: Float) {
         canvasMatrix.setScale(getTotalScale(), 1f)
         canvasMatrix.postTranslate(distanceX, 0f)
+        view.invalidate()
+    }
+
+    fun resetMatrix() {
+        canvasMatrix.reset()
         view.invalidate()
     }
 
