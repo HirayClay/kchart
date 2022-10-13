@@ -381,16 +381,20 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     fun setProperties(bitMartChartProperties: BitMartChartProperties) {
-        this.post {
+        this.bitMartChartProperties = bitMartChartProperties
+        if (this.properties.eachWidth != -1f) {
             val totalTranslate = getTotalTranslate()
             val preMaxTranslateWidth = areaCalcHelper.getMaxTranslateWidth(getTotalScale())
-            this.bitMartChartProperties = bitMartChartProperties
             covertProperties(false)
             calcEachHeight(height, width)
             val aftMaxTranslateWidth = areaCalcHelper.getMaxTranslateWidth(1f)
             val distanceX = aftMaxTranslateWidth * totalTranslate / preMaxTranslateWidth
             areaCalcHelper.resetMatrix()
             areaCalcHelper.setTranslate(distanceX)
+            requestLayout()
+        } else {
+            covertProperties(false)
+            calcEachHeight(height, width)
             requestLayout()
         }
     }
