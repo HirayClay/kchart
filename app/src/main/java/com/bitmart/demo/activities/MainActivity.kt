@@ -16,7 +16,7 @@ import com.bitmart.kchart.controller.ChartChangeListener
 import com.bitmart.kchart.entity.ChartDataEntity
 import com.bitmart.kchart.entity.ChartExtraInfoEntity
 import com.bitmart.kchart.entity.PositionInfo
-import com.bitmart.kchart.properties.*
+import com.bitmart.kchart.properties.BitMartChartProperties
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
@@ -120,23 +120,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_change_style).setOnClickListener {
+            val showNum = tmv.bitMartChartProperties.pageShowNum + 5
             tmv.setProperties(tmv.bitMartChartProperties.apply {
-                pageShowNum = 10
-                kLineRendererProperties = KLineRendererProperties(
-                    showType = KLineShowType.CANDLE_WITH_SAR,
-                    showMaxPrice = false,
-                    showNowPrice = true,
-                    showExtraInfo = true
-                )
-                volRendererProperties = VolRendererProperties()
-                kdjRendererProperties = KdjRendererProperties()
-                rsiRendererProperties = RsiRendererProperties()
-                macdRendererProperties = MacdRendererProperties()
+                pageShowNum = showNum
             })
-
-
-            val updateRunnable = PositionUpdateRunnable()
-            it.postDelayed(updateRunnable, 1000)
         }
 
         findViewById<Button>(R.id.btn_update_newer).setOnClickListener {

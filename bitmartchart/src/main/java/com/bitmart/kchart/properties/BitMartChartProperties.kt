@@ -44,13 +44,13 @@ class GlobalProperties private constructor(
 ) {
 
     //当前可显示条数宽度
-    var eachWidth by Delegates.notNull<Float>()
+    var eachWidth =-1f
 
     //每个条目的宽度
-    var itemWidth by Delegates.notNull<Float>()
+    var itemWidth =-1f
 
     //条目间隔宽度
-    var spaceWidth by Delegates.notNull<Float>()
+    var spaceWidth =-1f
 
     //是否是黑暗模式
     var isDarkMode by Delegates.notNull<Boolean>()
@@ -69,7 +69,7 @@ class GlobalProperties private constructor(
         fun fromProperties(properties: BitMartChartProperties): GlobalProperties {
             return GlobalProperties(
                 barSpaceRatio = properties.barSpaceRatio,
-                pageShowNum = properties.showNum(),
+                pageShowNum = properties.getStandardShowNum(),
                 headerRatio = properties.headerRatio,
                 pageMaxNumber = properties.pageMaxNumber,
                 pageMinNumber = properties.pageMinNumber,
@@ -92,7 +92,7 @@ class GlobalProperties private constructor(
     }
 }
 
-private fun BitMartChartProperties.showNum(): Int {
+fun BitMartChartProperties.getStandardShowNum(): Int {
     if (this.pageShowNum < this.pageMinNumber) return this.pageMinNumber
     if (this.pageShowNum > this.pageMaxNumber) return this.pageMaxNumber
     return this.pageShowNum

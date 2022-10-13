@@ -46,7 +46,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
 
     private var controller: BitMartChartViewController = BitMartChartViewController()
 
-    var bitMartChartProperties: BitMartChartProperties = BitMartChartProperties()
+    var bitMartChartProperties: BitMartChartProperties = DEFAULT_BIT_MART_CHART_PROPERTIES
         private set
 
     constructor(context: Context) : this(context, null)
@@ -69,7 +69,7 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         setWillNotDraw(false)
         controller.setListener(this)
         areaCalcHelper.setListener(this)
-        covertProperties(DEFAULT_BIT_MART_CHART_PROPERTIES, true)
+        covertProperties(true)
     }
 
     private fun calcEachHeight(viewHeight: Int, viewWidth: Int) {
@@ -87,8 +87,6 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         this.properties.eachWidth = eachWidth
         this.properties.itemWidth = itemWidth
         this.properties.spaceWidth = spaceWidth
-        this.properties.isDarkMode = context.isDarkMode()
-        this.properties.backgroundColor = context.getBackgroundColor()
 
         val sumRatio = this.childRenders.map { it.properties.heightRatio }.sum()
         val perHeight = drawAreaHeight / sumRatio
@@ -107,14 +105,17 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
         listenerDispatcher.cancel()
     }
 
-    private fun covertProperties(bitMartChartProperties: BitMartChartProperties, isDefault: Boolean = false) {
+    private fun covertProperties(isDefault: Boolean = false) {
+        this.properties = GlobalProperties.fromProperties(bitMartChartProperties)
+        this.properties.isDarkMode = context.isDarkMode()
+        this.properties.backgroundColor = context.getBackgroundColor()
+        //这里改回规范的showNum
+        this.bitMartChartProperties.pageShowNum = this.properties.pageShowNum
         if (controller.chartChangeListener != null && !isDefault) {
             runBlocking(listenerDispatcher) {
                 controller.chartChangeListener?.onChartPropertiesChange(bitMartChartProperties)
             }
         }
-
-        this.properties = GlobalProperties.fromProperties(bitMartChartProperties)
         val calcProperties = mutableListOf<IRendererProperties>()
 
         calcProperties.add(bitMartChartProperties.kLineRendererProperties)
@@ -318,9 +319,11 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     override fun onPageShowNumChange(showPageNum: Int) {
+        bitMartChartProperties.pageShowNum = showPageNum
+        bitMartChartProperties.pageShowNum = bitMartChartProperties.getStandardShowNum()
         if (controller.chartChangeListener != null) {
             runBlocking(listenerDispatcher) {
-                controller.chartChangeListener?.onPageShowNumChange(showPageNum)
+                controller.chartChangeListener?.onPageShowNumChange(bitMartChartProperties.pageShowNum)
             }
         }
     }
@@ -378,10 +381,18 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     fun setProperties(bitMartChartProperties: BitMartChartProperties) {
-        this.bitMartChartProperties =bitMartChartProperties
-        covertProperties(bitMartChartProperties, false)
-        calcEachHeight(height, width)
-        requestLayout()
+        this.post {
+            val totalTranslate = getTotalTranslate()
+            val preMaxTranslateWidth = areaCalcHelper.getMaxTranslateWidth(getTotalScale())
+            this.bitMartChartProperties = bitMartChartProperties
+            covertProperties(false)
+            calcEachHeight(height, width)
+            val aftMaxTranslateWidth = areaCalcHelper.getMaxTranslateWidth(1f)
+            val distanceX = aftMaxTranslateWidth * totalTranslate / preMaxTranslateWidth
+            areaCalcHelper.resetMatrix()
+            areaCalcHelper.setTranslate(distanceX)
+            requestLayout()
+        }
     }
 
     override fun onLoadMore() {

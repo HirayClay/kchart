@@ -1,6 +1,7 @@
 package com.bitmart.kchart.base
 
 import android.graphics.Matrix
+import com.bitmart.kchart.util.debug
 import com.bitmart.kchart.util.dp2px
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -222,7 +223,6 @@ class AreaCalcHelper(private val view: IBitMartChartView, private val canvasMatr
 
     fun resetMatrix() {
         canvasMatrix.reset()
-        view.invalidate()
     }
 
     fun setNoMoreData(noMore: Boolean) {
