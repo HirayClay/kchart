@@ -98,7 +98,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
             KLineShowType.CANDLE_WITH_MA -> minOf(dataEntity.low, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.ma[0], dataEntity.ma[1], dataEntity.ma[2])
             KLineShowType.CANDLE_WITH_EMA -> minOf(dataEntity.low, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.ema[0], dataEntity.ema[1], dataEntity.ema[2])
             KLineShowType.CANDLE_WITH_BOLL -> minOf(dataEntity.low, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.boll[0], dataEntity.boll[1], dataEntity.boll[2])
-            KLineShowType.CANDLE_WITH_SAR -> minOf(dataEntity.high, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.sar.sar)
+            KLineShowType.CANDLE_WITH_SAR -> minOf(dataEntity.low, dataEntity.high, dataEntity.close, dataEntity.open, dataEntity.sar.sar)
         }
     }
 
