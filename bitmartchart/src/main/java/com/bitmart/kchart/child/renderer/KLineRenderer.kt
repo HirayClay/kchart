@@ -209,14 +209,16 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
         var top = area.top
         info.forEach {
+            textPaint.textAlign = Paint.Align.LEFT
+            textPaint.color = bitMartChartView.getGlobalProperties().textColorSecondary()
+            canvas.drawText(it.first, area.left + fontPadding, top + fontSize, textPaint)
+
+            textPaint.textAlign = Paint.Align.RIGHT
             if (it.third) {
                 textPaint.color = if (dataEntity.isRise) bitMartChartView.getGlobalProperties().riseColor() else bitMartChartView.getGlobalProperties().downColor()
             } else {
                 textPaint.color = bitMartChartView.getGlobalProperties().textColor()
             }
-            textPaint.textAlign = Paint.Align.LEFT
-            canvas.drawText(it.first, area.left + fontPadding, top + fontSize, textPaint)
-            textPaint.textAlign = Paint.Align.RIGHT
             canvas.drawText(it.second, area.right - fontPadding, top + fontSize, textPaint)
             top += fontHeight
         }
@@ -474,7 +476,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         val eachDataHeight = (max - min) / (properties.showAxisYNum - 1)
         var dataStartY = max
 
-        textPaint.color = bitMartChartView.getGlobalProperties().textColor()
+        textPaint.color = bitMartChartView.getGlobalProperties().textColorSecondary()
         textPaint.textSize = getFontSize()
         textPaint.textAlign = Paint.Align.RIGHT
 
@@ -569,7 +571,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
     private fun drawAxisX(canvas: Canvas, chartData: List<ChartDataEntity>) {
 
-        textPaint.color = bitMartChartView.getGlobalProperties().textColor()
+        textPaint.color = bitMartChartView.getGlobalProperties().textColorSecondary()
         textPaint.textSize = getFontSize()
         textPaint.textAlign = Paint.Align.CENTER
 
@@ -595,7 +597,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
     override fun drawData(dataRect: RectF, canvas: Canvas, min: Double, max: Double, itemWidth: Float, preStartX: Float?, preData: ChartDataEntity?, curStartX: Float, curData: ChartDataEntity) {
         when (properties.showType) {
             KLineShowType.TIME_LINE -> {
-                linePaint.color = if (bitMartChartView.getGlobalProperties().isDarkMode) properties.timeLineDarkColor else properties.timeLineColor
+                linePaint.color = if (bitMartChartView.getGlobalProperties().isDarkMode) properties.timeLineColor.dark else properties.timeLineColor.light
                 drawLine(canvas, min, max, itemWidth, preStartX, preData?.close, curStartX, curData.close)
             }
             KLineShowType.CANDLE_WITH_MA, KLineShowType.CANDLE_WITH_EMA, KLineShowType.CANDLE_WITH_BOLL, KLineShowType.CANDLE_WITH_SAR -> drawCandle(canvas, min, max, itemWidth, preStartX, preData, curStartX, curData)
@@ -604,7 +606,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
 
     private fun getIndexColor(): List<Int> {
-        return if (bitMartChartView.getGlobalProperties().isDarkMode) properties.indexDarkColor else properties.indexDarkColor
+        return if (bitMartChartView.getGlobalProperties().isDarkMode) properties.indexColor.dark else properties.indexColor.light
     }
 
     private fun drawCandle(canvas: Canvas, min: Double, max: Double, itemWidth: Float, preStartX: Float?, preData: ChartDataEntity?, curStartX: Float, curData: ChartDataEntity) {

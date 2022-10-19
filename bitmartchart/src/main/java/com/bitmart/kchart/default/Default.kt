@@ -21,14 +21,14 @@ val DEFAULT_UP_COLOR = Color.parseColor("#FF58B038")
 val DEFAULT_DOWN_COLOR = Color.parseColor("#FFED6536")
 
 const val DEFAULT_DATE_FORMAT = "yy-MM-dd HH:mm"
-const val DEFAULT_TEXT_COLOR = Color.DKGRAY
-const val DEFAULT_TEXT_DARK_COLOR = Color.LTGRAY
+val DEFAULT_TEXT_COLOR = Color.parseColor("#2B2E36")
+val DEFAULT_TEXT_DARK_COLOR = Color.parseColor("#CACFD7")
+val DEFAULT_TEXT_COLOR_SECONDARY = Color.parseColor("#9C9FA5")
+val DEFAULT_TEXT_DARK_COLOR_SECONDARY = Color.parseColor("#6C7280")
 val DEFAULT_HIGH_LIGHTING_COLOR = Color.parseColor("#11000000")
 val DEFAULT_HIGH_LIGHTING_DARK_COLOR = Color.parseColor("#33FFFFFF")
-
 val DEFAULT_TIME_LINE_COLOR = Color.parseColor("#FF222F44")
 val DEFAULT_TIME_LINE_DARK_COLOR = Color.parseColor("#FF222F44")
-
 val DEFAULT_INDEX1_COLOR = Color.parseColor("#FFC9B885")
 val DEFAULT_INDEX2_COLOR = Color.parseColor("#FF6CB0A6")
 val DEFAULT_INDEX3_COLOR = Color.parseColor("#FF9979C6")

@@ -66,7 +66,7 @@ class VolRenderer(override val properties: VolRendererProperties, override val b
         }
         val max = bitMartChartView.getChartData().subList(dataRange.first, dataRange.second + 1).maxOf(rangeMaxBy)
         textPaint.textSize = getFontSize()
-        textPaint.color = bitMartChartView.getGlobalProperties().textColor()
+        textPaint.color = bitMartChartView.getGlobalProperties().textColorSecondary()
         textPaint.textAlign = Paint.Align.RIGHT
         canvas.drawText(max.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy), rendererRect.right, getMainRect().top + getFontSize(), textPaint)
     }
@@ -131,7 +131,7 @@ class VolRenderer(override val properties: VolRendererProperties, override val b
     }
 
     private fun getIndexColor(): List<Int> {
-        return if (bitMartChartView.getGlobalProperties().isDarkMode) properties.indexDarkColor else properties.indexDarkColor
+        return if (bitMartChartView.getGlobalProperties().isDarkMode) properties.indexColor.dark else properties.indexColor.light
     }
 
     private fun drawCandleLine(canvas: Canvas, min: Double, max: Double, itemWidth: Float, preStartX: Float?, preData: Double?, curStartX: Float, curData: Double?) {

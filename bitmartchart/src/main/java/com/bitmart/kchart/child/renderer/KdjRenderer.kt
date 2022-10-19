@@ -85,7 +85,7 @@ class KdjRenderer(override val properties: KdjRendererProperties, override val b
         val max = bitMartChartView.getChartData().subList(dataRange.first, dataRange.second + 1).maxOf(rangeMaxBy)
 
         textPaint.textSize = getFontSize()
-        textPaint.color = bitMartChartView.getGlobalProperties().textColor()
+        textPaint.color = bitMartChartView.getGlobalProperties().textColorSecondary()
         textPaint.textAlign = Paint.Align.RIGHT
         canvas.drawText(max.toStringAsFixed(bitMartChartView.getGlobalProperties().indexAccuracy), rendererRect.right, getMainRect().top + getFontSize(), textPaint)
         canvas.drawText(min.toStringAsFixed(bitMartChartView.getGlobalProperties().indexAccuracy), rendererRect.right, getMainRect().bottom, textPaint)
@@ -102,7 +102,7 @@ class KdjRenderer(override val properties: KdjRendererProperties, override val b
 
 
     private fun getIndexColor(): List<Int> {
-        return if (bitMartChartView.getGlobalProperties().isDarkMode) properties.indexDarkColor else properties.indexDarkColor
+        return if (bitMartChartView.getGlobalProperties().isDarkMode) properties.indexColor.dark else properties.indexColor.light
     }
 
     //绘制折线图

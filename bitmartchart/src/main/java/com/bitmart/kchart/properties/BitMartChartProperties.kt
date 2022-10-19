@@ -30,40 +30,40 @@ class GlobalProperties private constructor(
     //国际化语言配置项
     val chartLanguage: ChartLanguage,
     //阳线
-    private val riseColor: Int,
-    private val riseDarkColor: Int,
+    private val riseColor: ThemeColor,
     //阴线
-    private val downColor: Int,
-    private val downDarkColor: Int,
+    private val downColor: ThemeColor,
     //文字
-    private val textColor: Int,
-    private val textDarkColor: Int,
+    private val textColor: ThemeColor,
+
+    private val textColorSecondary: ThemeColor,
     //高亮
-    private val highlightingColor: Int,
-    private val highlightingDarkColor: Int,
+    private val highlightingColor: ThemeColor,
 ) {
 
     //当前可显示条数宽度
-    var eachWidth =-1f
+    var eachWidth = -1f
 
     //每个条目的宽度
-    var itemWidth =-1f
+    var itemWidth = -1f
 
     //条目间隔宽度
-    var spaceWidth =-1f
+    var spaceWidth = -1f
 
     //是否是黑暗模式
     var isDarkMode by Delegates.notNull<Boolean>()
 
     var backgroundColor by Delegates.notNull<Int>()
 
-    fun textColor() = if (isDarkMode) textDarkColor else textColor
+    fun textColor() = if (isDarkMode) textColor.dark else textColor.light
 
-    fun riseColor() = if (isDarkMode) riseDarkColor else riseColor
+    fun textColorSecondary() = if (isDarkMode) textColorSecondary.dark else textColorSecondary.light
 
-    fun downColor() = if (isDarkMode) downDarkColor else downColor
+    fun riseColor() = if (isDarkMode) riseColor.dark else riseColor.light
 
-    fun highlightingColor() = if (isDarkMode) highlightingDarkColor else highlightingColor
+    fun downColor() = if (isDarkMode) downColor.dark else downColor.light
+
+    fun highlightingColor() = if (isDarkMode) highlightingColor.dark else highlightingColor.light
 
     companion object {
         fun fromProperties(properties: BitMartChartProperties): GlobalProperties {
@@ -80,13 +80,10 @@ class GlobalProperties private constructor(
                 drawEmptyView = properties.drawEmptyView,
                 chartLanguage = properties.chartLanguage,
                 riseColor = properties.riseColor,
-                riseDarkColor = properties.riseDarkColor,
                 downColor = properties.downColor,
-                downDarkColor = properties.downDarkColor,
                 textColor = properties.textColor,
-                textDarkColor = properties.textDarkColor,
+                textColorSecondary = properties.textColorSecondary,
                 highlightingColor = properties.highlightingColor,
-                highlightingDarkColor = properties.highlightingDarkColor,
             )
         }
     }
@@ -128,21 +125,15 @@ data class BitMartChartProperties(
     //一屏最小显示的数据条数
     var pageMinNumber: Int = DEFAULT_MIN_PAGE_SHOW_NUM,
     //阳线
-    var riseColor: Int = DEFAULT_UP_COLOR,
-    //黑暗主题阳线
-    var riseDarkColor: Int = DEFAULT_UP_COLOR,
+    var riseColor: ThemeColor = ThemeColor(DEFAULT_UP_COLOR, DEFAULT_UP_COLOR),
     //阴线
-    var downColor: Int = DEFAULT_DOWN_COLOR,
-    //黑暗主题阴线
-    var downDarkColor: Int = DEFAULT_DOWN_COLOR,
+    var downColor: ThemeColor = ThemeColor(DEFAULT_DOWN_COLOR, DEFAULT_DOWN_COLOR),
     //文字颜色
-    var textColor: Int = DEFAULT_TEXT_COLOR,
-    //黑暗主题文字颜色
-    var textDarkColor: Int = DEFAULT_TEXT_DARK_COLOR,
+    var textColor: ThemeColor = ThemeColor(DEFAULT_TEXT_COLOR, DEFAULT_TEXT_DARK_COLOR),
+    //文字次级颜色
+    var textColorSecondary: ThemeColor = ThemeColor(DEFAULT_TEXT_DARK_COLOR_SECONDARY, DEFAULT_TEXT_COLOR_SECONDARY),
     //高亮颜色
-    var highlightingColor: Int = DEFAULT_HIGH_LIGHTING_COLOR,
-    //黑暗主题高亮颜色
-    var highlightingDarkColor: Int = DEFAULT_HIGH_LIGHTING_DARK_COLOR,
+    var highlightingColor: ThemeColor = ThemeColor(DEFAULT_HIGH_LIGHTING_COLOR, DEFAULT_HIGH_LIGHTING_DARK_COLOR),
     //绘制空数据占位
     var drawEmptyView: Boolean = false,
     //国际化语言配置项
@@ -206,13 +197,9 @@ data class KLineRendererProperties constructor(
     //显示的类型
     var showType: KLineShowType = KLineShowType.CANDLE_WITH_MA,
     //TimeLine颜色
-    var timeLineColor: Int = DEFAULT_TIME_LINE_COLOR,
-    //黑暗主题TimeLine颜色
-    var timeLineDarkColor: Int = DEFAULT_TIME_LINE_DARK_COLOR,
+    var timeLineColor: ThemeColor = ThemeColor(DEFAULT_TIME_LINE_COLOR, DEFAULT_TIME_LINE_DARK_COLOR),
     //指数颜色
-    var indexColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR),
-    //黑暗主题指数颜色；
-    var indexDarkColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR),
+    var indexColor: ThemeColorList = ThemeColorList(listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR), listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)),
     //是否显示当前价格
     var showNowPrice: Boolean = true,
     //是否显示最高价格
@@ -234,31 +221,31 @@ enum class KLineShowType {
 data class VolRendererProperties constructor(
     override var heightRatio: Float = 1f,
     //指数颜色
-    var indexColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR),
-    //黑暗主题指数颜色；
-    var indexDarkColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)
+    var indexColor: ThemeColorList = ThemeColorList(listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR), listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)),
 ) : IRendererProperties
 
 data class MacdRendererProperties constructor(
     override var heightRatio: Float = 1f,
     //指数颜色
-    var indexColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR),
-    //黑暗主题指数颜色；
-    var indexDarkColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)
+    var indexColor: ThemeColorList = ThemeColorList(listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR), listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)),
 ) : IRendererProperties
 
 data class KdjRendererProperties constructor(
     override var heightRatio: Float = 1f,
     //指数颜色
-    var indexColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR),
-    //黑暗主题指数颜色；
-    var indexDarkColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)
+    var indexColor: ThemeColorList = ThemeColorList(listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR), listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)),
 ) : IRendererProperties
 
 data class RsiRendererProperties constructor(
     override var heightRatio: Float = 1f,
     //指数颜色
-    var indexColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR),
-    //黑暗主题指数颜色；
-    var indexDarkColor: List<Int> = listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)
+    var indexColor: ThemeColorList = ThemeColorList(listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR), listOf(DEFAULT_INDEX1_COLOR, DEFAULT_INDEX2_COLOR, DEFAULT_INDEX3_COLOR)),
 ) : IRendererProperties
+
+abstract class ThemeData<T> {
+    abstract val light: T
+    abstract val dark: T
+}
+
+data class ThemeColor(override val light: Int, override val dark: Int) : ThemeData<Int>()
+data class ThemeColorList(override val light: List<Int>, override val dark: List<Int>) : ThemeData<List<Int>>()
