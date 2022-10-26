@@ -12,7 +12,6 @@ import com.bitmart.kchart.entity.SarEntity
 import com.bitmart.kchart.properties.KLineRendererProperties
 import com.bitmart.kchart.properties.KLineShowType
 import com.bitmart.kchart.util.addPlusSign
-import com.bitmart.kchart.util.toStringAsFixed
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -126,7 +125,6 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         }
         drawHighlightingDate(canvas, pressPoint, dataEntity)
         drawHighlightingInfo(renderRect, canvas, pressPoint, dataEntity)
-
     }
 
     //绘制当前价格
@@ -138,7 +136,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         }
         val min = bitMartChartView.getChartData().subList(dataRange.first, dataRange.second + 1).minOf(rangeMinBy)
         val max = bitMartChartView.getChartData().subList(dataRange.first, dataRange.second + 1).maxOf(rangeMaxBy)
-        val currentPrice = (max - (max - min) * (pressPoint.y - getDrawDataRect().top) / (getDrawDataRect().height())).toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
+        val currentPrice = (max - (max - min) * (pressPoint.y - getDrawDataRect().top) / (getDrawDataRect().height())).priceFormat()
 
         textPaint.color = bitMartChartView.getGlobalProperties().highlightingColor()
         textPaint.textSize = getFontSize()
@@ -179,13 +177,13 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
         val info = listOf(
             Triple("${bitMartChartView.getGlobalProperties().chartLanguage.date}:", DateFormat.format(properties.dataFormat, dataEntity.time).toString(), false),
-            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.open}:", dataEntity.open.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
-            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.high}:", dataEntity.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
-            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.low}:", dataEntity.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
-            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.close}:", dataEntity.close.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), false),
-            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.change}:", dataEntity.change.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy), true),
-            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.changeRatio}:", "${dataEntity.ratio.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)}%", true),
-            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.vol}:", dataEntity.vol.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.open}:", dataEntity.open.priceFormat(), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.high}:", dataEntity.high.priceFormat(), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.low}:", dataEntity.low.priceFormat(), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.close}:", dataEntity.close.priceFormat(), false),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.change}:", dataEntity.change.priceFormat(), true),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.changeRatio}:", "${dataEntity.ratio.priceFormat()}%", true),
+            Triple("${bitMartChartView.getGlobalProperties().chartLanguage.vol}:", dataEntity.vol.countFormat(), false),
         )
         val infoAreaMinWidth = info.maxOf { textPaint.measureText(it.first + it.second) }
         val infoAreaHeight = fontHeight * 8f
@@ -226,8 +224,6 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
     override fun drawHeader(renderRect: RectF, canvas: Canvas, dataEntity: ChartDataEntity) {
 
-        val indexAccuracy = bitMartChartView.getGlobalProperties().indexAccuracy
-
         textPaint.textSize = getFontSize()
         textPaint.textAlign = Paint.Align.LEFT
         val fixTextHeight = textPaint.fontMetrics.descent
@@ -236,9 +232,9 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
 
             }
             KLineShowType.CANDLE_WITH_MA -> {
-                val data1 = "MA5:${dataEntity.ma[0].toStringAsFixed(indexAccuracy)}"
-                val data2 = "MA10:${dataEntity.ma[1].toStringAsFixed(indexAccuracy)}"
-                val data3 = "MA20:${dataEntity.ma[2].toStringAsFixed(indexAccuracy)}"
+                val data1 = "MA5:${dataEntity.ma[0].indexFormat()}"
+                val data2 = "MA10:${dataEntity.ma[1].indexFormat()}"
+                val data3 = "MA20:${dataEntity.ma[2].indexFormat()}"
 
                 val width1 = textPaint.measureText(data1)
                 val width2 = textPaint.measureText(data2)
@@ -251,9 +247,9 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 canvas.drawText(data3, getHeaderRect().left + width1 + 20 + width2 + 20, getHeaderRect().bottom - fixTextHeight, textPaint)
             }
             KLineShowType.CANDLE_WITH_EMA -> {
-                val data1 = "EMA5:${dataEntity.ema[0].toStringAsFixed(indexAccuracy)}"
-                val data2 = "EMA10:${dataEntity.ema[1].toStringAsFixed(indexAccuracy)}"
-                val data3 = "EMA20:${dataEntity.ema[2].toStringAsFixed(indexAccuracy)}"
+                val data1 = "EMA5:${dataEntity.ema[0].indexFormat()}"
+                val data2 = "EMA10:${dataEntity.ema[1].indexFormat()}"
+                val data3 = "EMA20:${dataEntity.ema[2].indexFormat()}"
 
                 val width1 = textPaint.measureText(data1)
                 val width2 = textPaint.measureText(data2)
@@ -266,9 +262,9 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 canvas.drawText(data3, getHeaderRect().left + width1 + width2 + 20 + 20, getHeaderRect().bottom - fixTextHeight, textPaint)
             }
             KLineShowType.CANDLE_WITH_BOLL -> {
-                val data1 = "BOLL:${dataEntity.boll[0].toStringAsFixed(indexAccuracy)}"
-                val data2 = "UB:${dataEntity.boll[1].toStringAsFixed(indexAccuracy)}"
-                val data3 = "LB:${dataEntity.boll[2].toStringAsFixed(indexAccuracy)}"
+                val data1 = "BOLL:${dataEntity.boll[0].indexFormat()}"
+                val data2 = "UB:${dataEntity.boll[1].indexFormat()}"
+                val data3 = "LB:${dataEntity.boll[2].indexFormat()}"
 
                 val width1 = textPaint.measureText(data1)
                 val width2 = textPaint.measureText(data2)
@@ -281,7 +277,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 canvas.drawText(data3, getHeaderRect().left + width1 + width2 + 20 + 20, getHeaderRect().bottom - fixTextHeight, textPaint)
             }
             KLineShowType.CANDLE_WITH_SAR -> {
-                val data1 = "SAR:${dataEntity.sar.sar.toStringAsFixed(indexAccuracy)}"
+                val data1 = "SAR:${dataEntity.sar.sar.indexFormat()}"
                 textPaint.color = if (dataEntity.sar.rise) bitMartChartView.getGlobalProperties().riseColor() else bitMartChartView.getGlobalProperties().downColor()
                 canvas.drawText(data1, getHeaderRect().left, getHeaderRect().bottom - fixTextHeight, textPaint)
             }
@@ -317,7 +313,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                 return
             }
 
-            val price = it.price.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
+            val price = it.price.priceFormat()
             val pnl = it.pnl.addPlusSign()
 
             linePaint.color = when (it.way) {
@@ -436,7 +432,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         textPaint.color = if (chartData.last().isRise) bitMartChartView.getGlobalProperties().riseColor() else bitMartChartView.getGlobalProperties().downColor()
         textPaint.textSize = getFontSize()
         textPaint.textAlign = Paint.Align.LEFT
-        val nowPrice = chartData.last().close.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
+        val nowPrice = chartData.last().close.priceFormat()
         val textWidth = textPaint.measureText(nowPrice)
 
         /*绘制持仓价格背景*/
@@ -481,7 +477,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
         textPaint.textAlign = Paint.Align.RIGHT
 
         for (index in 1..properties.showAxisYNum) {
-            val data = dataStartY.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
+            val data = dataStartY.priceFormat()
             canvas.drawLine(rendererRect.left, startY, rendererRect.right - textPaint.measureText(data), startY, axisPaint)
             canvas.drawText(data, rendererRect.right, startY + abs(textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) / 4, textPaint)
             startY += eachHeight
@@ -524,7 +520,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                     maxDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2 * bitMartChartView.getTotalScale()
                     val pointY = (getDrawDataRect().height() * (max - it.high) / (max - min)).toFloat() + getDrawDataRect().top
 
-                    val lowPrice = it.high.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
+                    val lowPrice = it.high.priceFormat()
                     val textWidth = textPaint.measureText(lowPrice)
                     val lineWidth = textWidth / 1.6f * bitMartChartView.getTotalScale()
 
@@ -550,7 +546,7 @@ class KLineRenderer(override val properties: KLineRendererProperties, override v
                     minDataScreenPointX += bitMartChartView.getGlobalProperties().eachWidth / 2 * bitMartChartView.getTotalScale()
                     val pointY = (getDrawDataRect().height() * (max - it.low) / (max - min)).toFloat() + getDrawDataRect().top
 
-                    val lowPrice = it.low.toStringAsFixed(bitMartChartView.getGlobalProperties().priceAccuracy)
+                    val lowPrice = it.low.priceFormat()
                     val textWidth = textPaint.measureText(lowPrice)
                     val lineWidth = textWidth / 1.6f * bitMartChartView.getTotalScale()
 

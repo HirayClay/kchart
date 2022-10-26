@@ -7,7 +7,6 @@ import com.bitmart.kchart.base.IBitMartChartView
 import com.bitmart.kchart.child.base.BaseRenderer
 import com.bitmart.kchart.entity.ChartDataEntity
 import com.bitmart.kchart.properties.KdjRendererProperties
-import com.bitmart.kchart.util.toStringAsFixed
 
 class KdjRenderer(override val properties: KdjRendererProperties, override val bitMartChartView: IBitMartChartView) : BaseRenderer<KdjRendererProperties>() {
 
@@ -51,11 +50,10 @@ class KdjRenderer(override val properties: KdjRendererProperties, override val b
         textPaint.textSize = getFontSize()
         textPaint.textAlign = Paint.Align.LEFT
         val fixTextHeight = textPaint.fontMetrics.descent
-        val indexAccuracy = bitMartChartView.getGlobalProperties().indexAccuracy
         val data0 = "KDJ(9,3,3)"
-        val data1 = "K:${dataEntity.kdj[0].toStringAsFixed(indexAccuracy)}"
-        val data2 = "D:${dataEntity.kdj[1].toStringAsFixed(indexAccuracy)}"
-        val data3 = "J:${dataEntity.kdj[2].toStringAsFixed(indexAccuracy)}"
+        val data1 = "K:${dataEntity.kdj[0].indexFormat()}"
+        val data2 = "D:${dataEntity.kdj[1].indexFormat()}"
+        val data3 = "J:${dataEntity.kdj[2].indexFormat()}"
 
         val width0 = textPaint.measureText(data0)
         val width1 = textPaint.measureText(data1)
@@ -87,8 +85,8 @@ class KdjRenderer(override val properties: KdjRendererProperties, override val b
         textPaint.textSize = getFontSize()
         textPaint.color = bitMartChartView.getGlobalProperties().textColorSecondary()
         textPaint.textAlign = Paint.Align.RIGHT
-        canvas.drawText(max.toStringAsFixed(bitMartChartView.getGlobalProperties().indexAccuracy), rendererRect.right, getMainRect().top + getFontSize(), textPaint)
-        canvas.drawText(min.toStringAsFixed(bitMartChartView.getGlobalProperties().indexAccuracy), rendererRect.right, getMainRect().bottom, textPaint)
+        canvas.drawText(max.indexFormat(), rendererRect.right, getMainRect().top + getFontSize(), textPaint)
+        canvas.drawText(min.indexFormat(), rendererRect.right, getMainRect().bottom, textPaint)
     }
 
     override fun drawData(dataRect: RectF, canvas: Canvas, min: Double, max: Double, itemWidth: Float, preStartX: Float?, preData: ChartDataEntity?, curStartX: Float, curData: ChartDataEntity) {

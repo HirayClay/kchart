@@ -6,6 +6,8 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import com.bitmart.kchart.BuildConfig
+import java.math.BigDecimal
+import java.util.*
 
 
 fun Double.abs(): Double {
@@ -38,13 +40,6 @@ fun Number.sp2px(context: Context): Float {
 fun Number.px2sp(context: Context): Float {
     val fontScale = context.resources.displayMetrics.scaledDensity
     return this.toFloat() / fontScale + 0.5f
-}
-
-internal fun Number?.toStringAsFixed(accuracy: Int): String {
-    val num = this ?: 0.0
-    if (accuracy <= 0) return num.toInt().toString()
-    val format = "%.${accuracy}f"
-    return String.format(format, num)
 }
 
 private val zeroRegex = Regex("^[0]+\\.*[0]*$")

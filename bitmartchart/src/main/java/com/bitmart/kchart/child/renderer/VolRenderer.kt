@@ -7,7 +7,6 @@ import com.bitmart.kchart.base.IBitMartChartView
 import com.bitmart.kchart.child.base.BaseRenderer
 import com.bitmart.kchart.entity.ChartDataEntity
 import com.bitmart.kchart.properties.VolRendererProperties
-import com.bitmart.kchart.util.toStringAsFixed
 
 private const val FIXED_HEIGHT_RATIO = 0.02f
 
@@ -68,18 +67,16 @@ class VolRenderer(override val properties: VolRendererProperties, override val b
         textPaint.textSize = getFontSize()
         textPaint.color = bitMartChartView.getGlobalProperties().textColorSecondary()
         textPaint.textAlign = Paint.Align.RIGHT
-        canvas.drawText(max.toStringAsFixed(bitMartChartView.getGlobalProperties().countAccuracy), rendererRect.right, getMainRect().top + getFontSize(), textPaint)
+        canvas.drawText(max.countFormat(), rendererRect.right, getMainRect().top + getFontSize(), textPaint)
     }
 
     override fun drawHeader(renderRect: RectF, canvas: Canvas, dataEntity: ChartDataEntity) {
         textPaint.textSize = getFontSize()
         textPaint.textAlign = Paint.Align.LEFT
         val fixTextHeight = textPaint.fontMetrics.descent
-        val indexAccuracy = bitMartChartView.getGlobalProperties().indexAccuracy
-        val countAccuracy = bitMartChartView.getGlobalProperties().countAccuracy
-        val data1 = "VOL:${dataEntity.vol.toStringAsFixed(countAccuracy)}"
-        val data2 = "MA10:${dataEntity.volMa[0].toStringAsFixed(indexAccuracy)}"
-        val data3 = "MA20:${dataEntity.volMa[1].toStringAsFixed(indexAccuracy)}"
+        val data1 = "VOL:${dataEntity.vol.countFormat()}"
+        val data2 = "MA10:${dataEntity.volMa[0].indexFormat()}"
+        val data3 = "MA20:${dataEntity.volMa[1].indexFormat()}"
 
         val width1 = textPaint.measureText(data1)
         val width2 = textPaint.measureText(data2)

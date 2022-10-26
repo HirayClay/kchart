@@ -3,6 +3,10 @@
 package com.bitmart.kchart.properties
 
 import com.bitmart.kchart.default.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -18,11 +22,11 @@ class GlobalProperties private constructor(
     //头部所占的比例
     val headerRatio: Float,
     //价格精度
-    val priceAccuracy: Int,
+    val priceAccuracyFormat: DecimalFormat,
     //指数精度
-    val indexAccuracy: Int,
+    val indexAccuracyFormat: DecimalFormat,
     //数量精度
-    val countAccuracy: Int,
+    val countAccuracyFormat: DecimalFormat,
     //右边的距离
     val rightAxisWidth: Float,
     //绘制空数据
@@ -73,9 +77,9 @@ class GlobalProperties private constructor(
                 headerRatio = properties.headerRatio,
                 pageMaxNumber = properties.pageMaxNumber,
                 pageMinNumber = properties.pageMinNumber,
-                priceAccuracy = properties.priceAccuracy,
-                indexAccuracy = properties.indexAccuracy,
-                countAccuracy = properties.countAccuracy,
+                priceAccuracyFormat = getDecimalFormat(properties.priceAccuracy),
+                indexAccuracyFormat = getDecimalFormat(properties.indexAccuracy),
+                countAccuracyFormat = getDecimalFormat(properties.countAccuracy),
                 rightAxisWidth = properties.rightAxisWidth,
                 drawEmptyView = properties.drawEmptyView,
                 chartLanguage = properties.chartLanguage,
@@ -85,6 +89,12 @@ class GlobalProperties private constructor(
                 textColorSecondary = properties.textColorSecondary,
                 highlightingColor = properties.highlightingColor,
             )
+        }
+
+        private fun getDecimalFormat(accuracy: Int): DecimalFormat {
+            var pattern = ",##0"
+            for (index in 0 until accuracy) { pattern += if (index == 0) ".0" else "0" }
+            return DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.ENGLISH)).apply { roundingMode = RoundingMode.DOWN }
         }
     }
 }

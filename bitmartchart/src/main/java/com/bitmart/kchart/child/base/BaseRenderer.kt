@@ -107,6 +107,22 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
         return min
     }
 
+    protected fun Number?.priceFormat(): String {
+
+        if (this == null) return bitMartChartView.getGlobalProperties().priceAccuracyFormat.format(0.0)
+        return bitMartChartView.getGlobalProperties().priceAccuracyFormat.format(this)
+    }
+
+    protected fun Number?.countFormat(): String {
+        if (this == null) return bitMartChartView.getGlobalProperties().countAccuracyFormat.format(0.0)
+        return bitMartChartView.getGlobalProperties().countAccuracyFormat.format(this)
+    }
+
+    protected fun Number?.indexFormat(): String {
+        if (this == null) return bitMartChartView.getGlobalProperties().indexAccuracyFormat.format(0.0)
+        return bitMartChartView.getGlobalProperties().indexAccuracyFormat.format(this)
+    }
+
     //绘制标题
     open fun drawHeader(renderRect: RectF, canvas: Canvas, dataEntity: ChartDataEntity) {
 
