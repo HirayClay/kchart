@@ -52,6 +52,12 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
             canvas.restore()
             return
         }
+
+        if (dataRange.first < 0 || dataRange.second < 0) {
+            canvas.restore()
+            return
+        }
+
         val min = bitMartChartView.getChartData().subList(dataRange.first, dataRange.second + 1).minOf(rangeMinBy)
         val max = bitMartChartView.getChartData().subList(dataRange.first, dataRange.second + 1).maxOf(rangeMaxBy)
         chartData.forEachIndexed { index, dataEntity ->
@@ -66,7 +72,7 @@ abstract class BaseRenderer<out T : IRendererProperties> : IRenderer<T> {
     override fun noCovertDraw(canvas: Canvas, chartData: List<ChartDataEntity>, startX: Float, spaceWidth: Float, itemWidth: Float) {
         canvas.save()
         drawAxis(rendererRect, canvas)
-        drawExtraInfo(rendererRect,canvas,bitMartChartView.getChartExtraData())
+        drawExtraInfo(rendererRect, canvas, bitMartChartView.getChartExtraData())
         val highlightingPoint = bitMartChartView.getHighlightingPoint()
         if (highlightingPoint == null) {
             drawHeader(rendererRect, canvas, chartData.last())
