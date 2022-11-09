@@ -174,6 +174,10 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        if (visibility == GONE) {
+            return
+        }
+
         if (!this::properties.isInitialized) {
             return
         }
@@ -382,6 +386,9 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
 
     fun setProperties(bitMartChartProperties: BitMartChartProperties) {
         this.bitMartChartProperties = bitMartChartProperties
+        if (visibility == GONE) {
+            return
+        }
         if (this.properties.eachWidth != -1f) {
             val totalTranslate = getTotalTranslate()
             val preMaxTranslateWidth = areaCalcHelper.getMaxTranslateWidth(getTotalScale())
