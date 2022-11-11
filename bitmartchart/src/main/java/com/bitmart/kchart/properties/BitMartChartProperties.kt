@@ -93,10 +93,13 @@ class GlobalProperties private constructor(
 
         private fun getDecimalFormat(accuracy: Int): DecimalFormat {
             var pattern = ",##0"
-            for (index in 0 until accuracy) { pattern += if (index == 0) ".0" else "0" }
+            for (index in 0 until accuracy) {
+                pattern += if (index == 0) ".0" else "0"
+            }
             return DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.ENGLISH)).apply { roundingMode = RoundingMode.DOWN }
         }
     }
+
 }
 
 fun BitMartChartProperties.getStandardShowNum(): Int {
@@ -158,6 +161,64 @@ data class BitMartChartProperties(
             rsiRendererProperties = rsiRendererProperties?.copy(),
         )
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BitMartChartProperties
+
+        if (kLineRendererProperties != other.kLineRendererProperties) return false
+        if (volRendererProperties != other.volRendererProperties) return false
+        if (macdRendererProperties != other.macdRendererProperties) return false
+        if (kdjRendererProperties != other.kdjRendererProperties) return false
+        if (rsiRendererProperties != other.rsiRendererProperties) return false
+        if (priceAccuracy != other.priceAccuracy) return false
+        if (indexAccuracy != other.indexAccuracy) return false
+        if (countAccuracy != other.countAccuracy) return false
+        if (rightAxisWidth != other.rightAxisWidth) return false
+        if (barSpaceRatio != other.barSpaceRatio) return false
+        if (pageShowNum != other.pageShowNum) return false
+        if (headerRatio != other.headerRatio) return false
+        if (pageMaxNumber != other.pageMaxNumber) return false
+        if (pageMinNumber != other.pageMinNumber) return false
+        if (riseColor != other.riseColor) return false
+        if (downColor != other.downColor) return false
+        if (textColor != other.textColor) return false
+        if (textColorSecondary != other.textColorSecondary) return false
+        if (highlightingColor != other.highlightingColor) return false
+        if (drawEmptyView != other.drawEmptyView) return false
+        if (chartLanguage != other.chartLanguage) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = kLineRendererProperties.hashCode()
+        result = 31 * result + (volRendererProperties?.hashCode() ?: 0)
+        result = 31 * result + (macdRendererProperties?.hashCode() ?: 0)
+        result = 31 * result + (kdjRendererProperties?.hashCode() ?: 0)
+        result = 31 * result + (rsiRendererProperties?.hashCode() ?: 0)
+        result = 31 * result + priceAccuracy
+        result = 31 * result + indexAccuracy
+        result = 31 * result + countAccuracy
+        result = 31 * result + rightAxisWidth.hashCode()
+        result = 31 * result + barSpaceRatio.hashCode()
+        result = 31 * result + pageShowNum
+        result = 31 * result + headerRatio.hashCode()
+        result = 31 * result + pageMaxNumber
+        result = 31 * result + pageMinNumber
+        result = 31 * result + riseColor.hashCode()
+        result = 31 * result + downColor.hashCode()
+        result = 31 * result + textColor.hashCode()
+        result = 31 * result + textColorSecondary.hashCode()
+        result = 31 * result + highlightingColor.hashCode()
+        result = 31 * result + drawEmptyView.hashCode()
+        result = 31 * result + chartLanguage.hashCode()
+        return result
+    }
+
+
 }
 
 interface IRendererProperties {
@@ -193,6 +254,34 @@ class ChartLanguage(
         fun english(): ChartLanguage {
             return ChartLanguage()
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as ChartLanguage
+        if (date != other.date) return false
+        if (open != other.open) return false
+        if (close != other.close) return false
+        if (high != other.high) return false
+        if (low != other.low) return false
+        if (change != other.change) return false
+        if (changeRatio != other.changeRatio) return false
+        if (vol != other.vol) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = date.hashCode()
+        result = 31 * result + open.hashCode()
+        result = 31 * result + close.hashCode()
+        result = 31 * result + high.hashCode()
+        result = 31 * result + low.hashCode()
+        result = 31 * result + change.hashCode()
+        result = 31 * result + changeRatio.hashCode()
+        result = 31 * result + vol.hashCode()
+        return result
     }
 }
 

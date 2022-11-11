@@ -385,6 +385,11 @@ class BitMartChartView : View, TouchHelperListener, IBitMartChartView, BitMartCh
     }
 
     fun setProperties(bitMartChartProperties: BitMartChartProperties) {
+
+        if (this.bitMartChartProperties == bitMartChartProperties) {
+            return
+        }
+
         this.bitMartChartProperties = bitMartChartProperties
         if (visibility == GONE) {
             return
