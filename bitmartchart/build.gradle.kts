@@ -53,7 +53,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.bitmart.android"
                 artifactId = "k-chart"
-                version = "1.3.9"
+                version = "1.4.0"
             }
 
             repositories {
