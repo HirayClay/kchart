@@ -3,4 +3,4 @@
 目前包含常用的指标，boll macd ema rsi kdj sar 
 
 
-<img src="art/k.gif"/>
+<img src="art/k2.gif"/>
